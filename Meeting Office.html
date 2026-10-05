@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Meeting Office</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style id="appcss">
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#eef1f6;--card:#fff;--tx:#14213d;--mu:#55627a;--bd:#d3d9e4;--pr:#1d3a6e;--pr2:#2c5aa0;--prt:#fff;--soft:#e8eef8;--dg:#9b1c1c;--ok:#1d6b3a;--wa:#8a5a00;--sh:0 1px 2px rgba(20,33,61,.08),0 4px 14px rgba(20,33,61,.06)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d131d;--card:#172030;--tx:#eef2f8;--mu:#a9b4c7;--bd:#334157;--pr:#7fa6e8;--pr2:#9bbcf2;--prt:#0b1220;--soft:#1f2c42;--dg:#ff8d8d;--ok:#74d49a;--wa:#f0c36a;--sh:0 1px 2px rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{--bg:#0d131d;--card:#172030;--tx:#eef2f8;--mu:#a9b4c7;--bd:#334157;--pr:#7fa6e8;--pr2:#9bbcf2;--prt:#0b1220;--soft:#1f2c42;--dg:#ff8d8d;--ok:#74d49a;--wa:#f0c36a;--sh:0 1px 2px rgba(0,0,0,.4)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+header{background:linear-gradient(135deg,#142a52,#1d3a6e 60%,#2c5aa0);color:#fff;padding:18px 20px 0;box-shadow:var(--sh)}
+header>*{max-width:1200px;margin-left:auto;margin-right:auto}
+h1{margin:0;font-size:1.45rem;font-weight:700;letter-spacing:.2px;display:flex;align-items:center;gap:10px}
+h1:before{content:"";width:6px;height:26px;border-radius:3px;background:#f0c36a}
+h2{margin:0 0 12px;font-size:1.02rem;font-weight:700;letter-spacing:.2px}
+header p{margin:4px 0 0 16px;color:#cdd8ee;font-size:.92rem}
+nav{display:flex;gap:4px;flex-wrap:wrap;margin-top:14px;align-items:flex-end}
+nav button{background:transparent;color:#dbe4f5;border:0;border-bottom:3px solid transparent;border-radius:6px 6px 0 0;padding:9px 16px;font-weight:600}
+nav button:hover{background:rgba(255,255,255,.12);color:#fff}
+nav button.on{background:var(--bg);color:var(--pr);border-bottom-color:var(--bg)}
+nav button.p{background:#f0c36a;color:#14213d;border-radius:6px;margin:0 0 6px;border:0}
+nav button.p:hover{background:#f6d58f}
+main{max-width:1200px;margin:0 auto;padding:20px 16px 40px}
+button,input,select,textarea{font:inherit;color:var(--tx)}
+button{background:var(--card);border:1px solid var(--bd);border-radius:7px;padding:7px 13px;cursor:pointer;min-height:40px;font-weight:600;transition:background .15s,border-color .15s,box-shadow .15s}
+button:hover{border-color:var(--pr);background:var(--soft)}
+button.p{background:var(--pr);color:var(--prt);border-color:var(--pr)}button.p:hover{background:var(--pr2)}
+button.d{color:var(--dg);border-color:var(--dg);background:transparent}button.d:hover{background:var(--dg);color:var(--card)}
+:focus-visible{outline:3px solid var(--pr2);outline-offset:2px}
+input,select,textarea{background:var(--card);border:1px solid var(--bd);border-radius:7px;padding:8px 10px;width:100%;min-height:40px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pr2);box-shadow:0 0 0 3px var(--soft)}
+input[type=checkbox]{width:auto;min-height:0;transform:scale(1.3);accent-color:var(--pr)}
+label{display:block;font-weight:600;font-size:.88rem;margin:12px 0 4px;color:var(--mu)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px;box-shadow:var(--sh)}
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:18px}.blk{grid-column:span var(--w,12)}
+@media(max-width:900px){.blk{grid-column:span 12}header{padding:14px 12px 0}nav button{padding:8px 11px}}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.stat{background:var(--soft);border:1px solid var(--bd);border-top:4px solid var(--pr);border-radius:10px;padding:12px 10px;text-align:left}
+.stat:nth-child(4){border-top-color:var(--pr2)}.stat:nth-child(5){border-top-color:var(--ok)}.stat:nth-child(6){border-top-color:var(--dg)}
+.stat b{display:block;font-size:2rem;line-height:1.1;color:var(--tx)}.stat span{color:var(--mu);font-size:.82rem;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.mt{display:flex;gap:12px;align-items:center;border:1px solid var(--bd);border-radius:10px;padding:10px 12px;margin-bottom:10px;cursor:pointer;background:var(--card);transition:box-shadow .15s,border-color .15s}
+.mt:hover{border-color:var(--pr);box-shadow:var(--sh)}.mt.cancelled{opacity:.75}.mt.cancelled b{text-decoration:line-through}
+.dt{flex:0 0 52px;text-align:center;background:var(--pr);color:var(--prt);border-radius:8px;padding:5px 0;line-height:1.15}
+.dt b{display:block;font-size:1.3rem}.dt span{font-size:.7rem;text-transform:uppercase;letter-spacing:.6px}
+.mt.cancelled .dt{background:var(--dg)}.mt.completed .dt{background:var(--ok)}
+.mb{min-width:0;flex:1}.mt small{color:var(--mu);display:block;font-size:.85rem}
+.badge{font-size:.7rem;font-weight:700;border:1px solid currentColor;border-radius:10px;padding:1px 8px;margin-left:8px;text-transform:uppercase;letter-spacing:.4px;vertical-align:middle}
+.badge.upcoming{color:var(--pr)}.badge.completed{color:var(--ok)}.badge.cancelled{color:var(--dg)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.row>*{flex:0 0 auto}.row .g{flex:1 1 160px}
+.mg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;min-width:600px}
+.mg .h{font-weight:700;text-align:center;font-size:.78rem;padding:6px;color:var(--mu);text-transform:uppercase;letter-spacing:.5px}
+.cell{border:1px solid var(--bd);border-radius:8px;min-height:98px;padding:5px;font-size:.78rem;background:var(--card);overflow:hidden}.cell:hover{border-color:var(--pr2)}
+.cell.o{opacity:.45;background:var(--bg)}.cell.t{border:2px solid var(--pr);background:var(--soft)}.cell.t>b{background:var(--pr);color:var(--prt);border-radius:50%;display:inline-block;min-width:22px;text-align:center}
+.chip{display:block;background:var(--soft);color:var(--tx);border-left:3px solid var(--pr);border-radius:4px;padding:1px 5px;margin-top:3px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.chip:hover{background:var(--bd)}
+.chip.cancelled{border-left-color:var(--dg);text-decoration:line-through;color:var(--mu)}
+.sc{overflow-x:auto}.wk{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.fe{outline:2px dashed var(--pr);outline-offset:3px;cursor:grab}.fb{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--bd)}.fb button{padding:2px 9px;min-height:32px}
+.over{outline:3px solid var(--wa)}
+#modal{position:fixed;inset:0;background:rgba(10,18,34,.6);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:20px;z-index:9}
+#modal .card{width:100%;max-width:580px;margin:auto;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:8px;display:none;z-index:10;box-shadow:var(--sh);font-weight:600}
+.fld{border:1px solid var(--bd);border-left:4px solid var(--pr);border-radius:8px;padding:6px 12px 12px;margin-bottom:12px;background:var(--bg)}
+.muted{color:var(--mu)}p.muted{margin:6px 0}.warn{background:var(--card);border:1px solid var(--wa);border-left:4px solid var(--wa);color:var(--wa);padding:10px 12px;border-radius:8px;margin-bottom:14px;font-weight:600}
+header{padding:calc(10px + var(--hh,12px)) 20px calc(10px + var(--hh,12px));transition:padding .15s}
+h1{font-size:calc(1.25rem + var(--hh,12px)*.2)}header.fe-h{outline:2px dashed #f0c36a;outline-offset:-4px}
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.tt{flex:1 1 200px;min-width:0}
+#hb{font-size:1.5rem;background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.35);min-width:48px;min-height:48px;padding:0 12px}#hb:hover{background:rgba(255,255,255,.26)}
+nav{margin:0;display:flex;gap:8px;flex-wrap:wrap}nav button,nav button:hover{border-radius:7px;border-bottom:0;margin:0}
+.hfb{margin:12px 0 0;padding:10px 0 0;border-top:1px solid rgba(255,255,255,.3);border-bottom:0;align-items:center;color:#fff}.hfb button{background:var(--card);color:var(--tx)}.hfb button.p{background:#f0c36a;color:#14213d;border-color:#f0c36a}
+#dr{position:fixed;top:0;left:0;bottom:0;width:290px;max-width:86vw;background:var(--card);border-right:1px solid var(--bd);box-shadow:0 0 40px rgba(0,0,0,.35);transform:translateX(-105%);visibility:hidden;transition:transform .25s,visibility 0s .25s;z-index:20;display:flex;flex-direction:column;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+#dr.open{transform:none;visibility:visible;transition:transform .25s}
+#dv{position:fixed;inset:0;background:rgba(10,18,34,.55);display:none;z-index:19}
+.dh{display:flex;justify-content:space-between;align-items:center;padding:16px;background:var(--pr);color:var(--prt);font-size:1.1rem}.dh button{background:transparent;color:inherit;border-color:currentColor;min-height:34px}
+.dl{display:block;width:calc(100% - 20px);margin:8px 10px 0;text-align:left;border:0;background:transparent;font-size:1rem;padding:12px 14px}.dl.on{background:var(--soft);color:var(--pr);box-shadow:inset 4px 0 0 var(--pr)}
+.ds{margin-top:auto;border-top:1px solid var(--bd);padding:10px 0 14px}.ds small{display:block;margin:4px 24px 0}
+.acc{width:100%;display:flex;justify-content:space-between;align-items:center;font-size:1.02rem;border:0;background:transparent;padding:0;min-height:36px}.acc:hover{background:transparent}.acc span+span{color:var(--mu);font-size:.82rem;font-weight:600}
+.hs{flex:1 1 220px;max-width:460px}.hs input{background:#fff;color:#14213d;border-color:transparent}
+nav{margin-left:auto}h1:before{display:none}h1{flex:0 1 auto;margin-left:2px}
+.tabs{display:flex;gap:2px;overflow-x:auto;border-bottom:2px solid var(--bd);margin-bottom:16px}
+.tab{border:0;border-bottom:3px solid transparent;border-radius:8px 8px 0 0;background:transparent;white-space:nowrap;margin-bottom:-2px;padding:10px 16px;color:var(--mu)}
+.tab.on{color:var(--pr);border-bottom-color:var(--pr);background:var(--soft)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0 16px}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:4px 16px;margin:6px 0 4px}.fc label button{min-height:24px;padding:0 7px;float:right}
+.ck{display:flex;gap:10px;align-items:center;color:var(--tx);font-weight:500;margin:8px 0}h3{margin:18px 0 4px;font-size:.95rem}
+.stat{position:relative;display:block;width:100%;font-weight:inherit;cursor:pointer;color:var(--tx);transition:box-shadow .15s,transform .15s,background .15s,border-color .15s}
+.stat:nth-child(-n+3){border-top-color:var(--pr)}
+.stat:hover{background:var(--card);box-shadow:var(--sh);transform:translateY(-1px);border-right-color:var(--pr2);border-bottom-color:var(--pr2);border-left-color:var(--pr2)}
+.stat:after{content:"→";position:absolute;right:10px;top:10px;color:var(--mu);transition:transform .15s,color .15s}
+.stat:hover:after{transform:translateX(3px);color:var(--pr)}.fe .stat{pointer-events:none}
+[data-date]{user-select:none}
+.cs{display:grid;grid-template-columns:repeat(var(--per,3),minmax(0,1fr));gap:12px;animation:cf .6s ease}
+@keyframes cf{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.cs{animation:none}}@media(max-width:700px){.cs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.cn{display:flex;justify-content:center;align-items:center;gap:14px;margin-top:12px}.cn>button{border-radius:50%;width:38px;min-height:38px;padding:0;font-size:1.3rem;line-height:1}
+.dots{display:flex;gap:8px;align-items:center}.dot{width:14px;min-height:14px;height:14px;padding:0;border-radius:50%;border:2px solid var(--pr);background:transparent}.dot.on{background:var(--pr)}
+.stat.plain{cursor:default}.stat.plain:after{display:none}.stat.plain:hover{transform:none;box-shadow:none;background:var(--soft)}
+.cw{position:relative;display:flex}.cw>.stat{flex:1}.stat .ci{font-style:normal;font-size:1.3rem;display:block}.stat em{display:block;font-style:normal;color:var(--mu);font-size:.85rem}.stat small{display:block;color:var(--mu);font-size:.8rem}
+.cs.ctr .stat{text-align:center}.cs.cmp .stat{padding:6px 8px}.cs.cmp .stat b{font-size:1.4rem}
+.rh{position:absolute;right:2px;bottom:2px;width:18px;height:18px;border-right:4px solid var(--pr);border-bottom:4px solid var(--pr);cursor:nwse-resize;touch-action:none}.ce{position:absolute;left:6px;bottom:6px;min-height:28px;padding:1px 8px}
+.sbar{position:sticky;top:0;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:8px 14px;margin-bottom:12px;box-shadow:var(--sh);font-weight:600}
+button:disabled{opacity:.45;cursor:not-allowed}
+.sl{display:grid;grid-template-columns:240px minmax(0,1fr);gap:16px;align-items:start}
+.vt{flex-direction:column;overflow:visible;border:1px solid var(--bd);border-radius:12px;background:var(--card);padding:8px;margin:0;box-shadow:var(--sh);position:sticky;top:64px}
+.vt .tab{width:100%;text-align:left;border-radius:8px;border-bottom:0;margin:0;padding:11px 14px}.vt .tab.on{background:var(--soft);box-shadow:inset 3px 0 0 var(--pr)}
+@media(max-width:800px){.sl{grid-template-columns:minmax(0,1fr)}.vt{flex-direction:row;overflow-x:auto;position:static}.vt .tab{width:auto}}
+.tp{padding:22px}.tp>h2{font-size:1.2rem;padding-bottom:10px;border-bottom:1px solid var(--bd);margin-bottom:14px}
+.tp h3{margin:22px 0 4px;padding-top:16px;border-top:1px solid var(--bd)}.tp>h2+h3,.tp>h2+p+h3{border-top:0;padding-top:0;margin-top:8px}
+.stat.cu2{text-align:left;padding:14px}.cu2 span{text-transform:none;letter-spacing:0;font-size:inherit;font-weight:inherit;color:inherit}
+.cu2 .cu-h{display:flex;align-items:center;gap:8px;font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.6px;color:var(--mu);margin-bottom:10px}
+.cu2 .cu-main{display:flex;gap:16px;align-items:center;flex-wrap:wrap;background:var(--card);border:1px solid var(--pr);border-left-width:5px;border-radius:10px;padding:12px 14px}
+.cu2 .cu-cd{display:block;text-align:center;min-width:120px}.cu2 .cu-cd small{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.6px;color:var(--mu);font-weight:600}.cu2 .cu-cd b{font-size:1.9rem;line-height:1.15;color:var(--pr);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cu2 .cu-in{display:block;min-width:0;flex:1 1 160px}.cu2 .cu-in strong{display:block;font-size:1.05rem;color:var(--tx)}.cu2 .cu-in em{display:block;font-style:normal;color:var(--tx);font-weight:600;font-size:.9rem}.cu2 .cu-in small{display:block;color:var(--mu)}
+.cu2 .cu-list{display:block;margin-top:10px}.cu2 .cu-row{display:flex;gap:4px 10px;flex-wrap:wrap;align-items:baseline;padding:7px 4px;border-top:1px solid var(--bd);font-size:.88rem;color:var(--mu)}
+.cu2 .cu-d{flex:0 0 auto;font-variant-numeric:tabular-nums}.cu2 .cu-t{color:var(--tx);font-weight:600;flex:1 1 120px}.cu2 .cu-row small{flex:1 0 100%;font-size:.78rem}.cu2 .cu-empty{display:block;color:var(--mu)}
+.cu2.cmp2 .cu-main{padding:8px 10px}.cu2.cmp2 .cu-cd b{font-size:1.3rem}.cu2.cmp2 .cu-list{display:flex;flex-wrap:wrap;gap:0 16px}.cu2.cmp2 .cu-row{border:0;padding:2px 0}
+.cu2 [data-open]{cursor:pointer}.cu2 .cu-main[data-open]:hover{box-shadow:var(--sh)}.cu2 .cu-row[data-open]:hover{background:var(--soft)}
+.pn{margin:8px 0 4px;padding-left:22px}.pn li{margin:3px 0}details summary{cursor:pointer;color:var(--pr);font-weight:600;margin-top:6px}
+</style></head><body>
+<header id="hd"> <!-- HEADER: [☰ button] [page title] [search bar] [Add Meeting]. Size: Settings > Layout > Fast Edit --><div class="top"><button id="hb" data-drawer="1" aria-label="Open menu">☰</button><h1 id="an"></h1><div class="hs" id="hsw"><input id="hq" type="search" placeholder="🔍 Search meetings..." aria-label="Search meetings"></div><nav id="nav"></nav></div><div id="hfe"></div></header>
+<aside id="dr" aria-label="Navigation"></aside><div id="dv"></div><main id="app"></main><div id="modal"></div><div id="toast"></div>
+<script id="appjs">
+/* ===================== MEETING OFFICE — SOURCE GUIDE =====================
+ WHERE TO CHANGE WHAT (everything below is saved in the shared "config" record, `cfg`):
+  NAME        app name: cfg.name | menu/page labels: cfg.nav[].label | field names: cfg.fields[].label
+  POSITION    menu order: cfg.nav (array order) | form/search field order: cfg.fields (array order)
+              dashboard section order: cfg.layout.order
+  SIZE        dashboard section width: cfg.layout.w[section] (1-12 grid columns; 12 = full width)
+              header height: cfg.layout.hh (pixels of extra padding, 0-56)
+  COLOR       CSS variables at the top of the <style> block (--pr main colour, --bg page, --card panels,
+              --dg red/cancelled, --ok green/completed). Change a value there to recolour the whole app.
+  VISIBILITY  field shown in forms/search: cfg.fields[].visible | search bar hidden on Settings: render()
+              default Meeting Search filters: cfg.search.defaultFilters
+  Changing a label never changes behaviour: code always uses fixed ids ('dash','cal','recs','set'
+  and field ids), labels are only displayed text.
+ ========================================================================== */
+const $=s=>document.querySelector(s),pad=n=>String(n).padStart(2,'0');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,10),ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const pd=s=>{const[a,b,c]=s.split('-').map(Number);return new Date(a,b-1,c)},addD=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const TYPES={text:'Text',number:'Number',date:'Date',time:'Time',datetime:'Date & Time',longtext:'Long Text',dropdown:'Dropdown',checkbox:'Checkbox',email:'Email',phone:'Phone',url:'URL'};
+const INP={text:'text',number:'number',date:'date',time:'time',datetime:'datetime-local',email:'email',phone:'tel',url:'url'};
+const DEF0=()=>({name:'Meeting Office',desc:'Coordinate team and department meetings.',weekStart:0,defView:'month',hour12:false,dateFmt:'DD/MM/YYYY',
+ /* NAVIGATION: id = fixed internal page (never change); label = displayed text; array order = menu order (Settings stays last) */
+ nav:[{id:'dash',label:'Dashboard'},{id:'cal',label:'Calendar'},{id:'recs',label:'Meeting Search'},{id:'set',label:'Settings'}],
+ /* SEARCH: defaultFilters = filter ids active when Meeting Search opens ('_status' or a field id); exclude = field ids ignored by text search */
+ search:{defaultFilters:['date','department'],exclude:[]},
+ /* CUSTOM DASHBOARD CARDS: cards = [{id,field,value,title,link}] (starts empty; created in Fast Edit or Settings > Dashboard Cards).
+    carousel.secs = seconds before the next slide (5-120, default 15); carousel.per = cards shown per slide (1-4). */
+ cards:[],carousel:{secs:15,per:3},
+ /* DASHBOARD SETTINGS: titles (blank = default text), visible = which sections show, layout 'carousel'|'grid', gap = card spacing px,
+    ch = default card height px (0 = auto), align 'left'|'center', density 'comfortable'|'compact' */
+ dash:{titles:{main:'',stats:'Overview',cards:'Announcement',upcoming:'Upcoming meetings',today:"Today's schedule"},visible:{stats:true,coming:true,cards:true,upcoming:true,today:true},layout:'carousel',gap:12,ch:0,align:'left',density:'comfortable',cu:{count:3,layout:'featured',fields:['location','organizer','department'],dayHours:24,secHours:7,icon:'',action:'detail'}},
+ fields:[['title','Title','text',1],['date','Date','date',1],['start','Start time','time',1],['end','End time','time'],['location','Location','text'],['organizer','Organizer','text'],['department','Department','text'],['attendees','Attendees','longtext'],['agenda','Agenda','longtext']].map(f=>({id:f[0],label:f[1],type:f[2],required:!!f[3],options:[],visible:true,builtin:true})),
+ layout:{order:['stats','coming','cards','upcoming','today'],w:{stats:12,coming:12,cards:12,upcoming:8,today:4},hh:12},history:[]});
+/* VERSIONS: cfg.versions = {cur: current version, list: [{v, date, notes}] (text only), prev: {v, snap}}. `prev` is the ONLY stored snapshot: the Settings
+   configuration of the immediately previous version. It is overwritten (never added to) when a new version is created, so storage cannot grow. Starting version 00.00, current version 00.10. */
+const snapOf=c=>{const o=JSON.parse(JSON.stringify(c));delete o.versions;delete o.history;return o};
+/* RELEASE LOG: add one entry here (and update APP_VER) for every change to the application. On load, migrate() appends releases a saved
+   configuration does not know yet and stores that configuration as the snapshot of the version being left, so one-step rollback restores real settings. */
+const APP_VER='00.14',RELEASES=[
+ {v:'00.00',notes:['Initial version.']},
+ {v:'00.10',notes:['Tabbed Settings','Meeting Search with configurable filters','Dashboard cards with a rotating carousel','Navigation menu','Patch notes, save and restore controls']},
+ {v:'00.11',date:'2026-10-04',notes:['Overview Cards tab in Dashboard Settings','Renameable and reorderable Settings tabs','Redesigned Settings layout','Separate Coming Up dashboard section']},
+ {v:'00.12',date:'2026-10-04',notes:['Coming Up added as a Dashboard Card type','1-4 upcoming meetings, countdown on the closest only','Configurable countdown thresholds','Separate Coming Up section removed']},
+ {v:'00.13',date:'2026-10-04',notes:['Coming Up dashboard section restored, with its own Dashboard Settings tab','Coming Up card type kept','Cards moved into Appearance and renamed Announcement']},
+ {v:'00.14',date:'2026-10-04',notes:['Announcement settings moved to a separate Announcement Cards tab','Patch notes shown as bullet points','Rollback keeps only one previous version','Clicking a meeting in Coming Up can open its details']}].map(r=>({...r,notes:r.notes.join('\\n')}));
+function migrate(d){const before=snapOf(d);let ch=false;const D=d.dash;
+ if(D){if(D.titles&&D.titles.cards==='Dashboard cards'){D.titles.cards='Announcement';ch=true}if(!D.cu){D.cu=DEF().dash.cu;ch=true}}
+ const V=d.versions;if(!V)return ch;
+ if(V.list.some(x=>'snap' in x)){const ci0=V.list.findIndex(x=>x.v===V.cur),pv=V.list[ci0-1];if(!V.prev&&pv&&pv.snap)V.prev={v:pv.v,snap:pv.snap};V.list.forEach(x=>delete x.snap);ch=true} /* old format kept a snapshot per version: keep only the immediate previous one */
+ RELEASES.forEach(r=>{const x=V.list.find(y=>y.v===r.v);if(x&&!x.edited&&x.notes!==r.notes){x.notes=r.notes;ch=true}});
+ const miss=RELEASES.filter(r=>!V.list.some(x=>x.v===r.v));if(!miss.length)return ch;
+ V.prev={v:V.cur,snap:before};miss.forEach(r=>V.list.push({v:r.v,date:r.date||'',notes:r.notes}));V.cur=APP_VER;
+ if(miss.some(r=>r.v==='00.14')){if(D&&D.cu&&D.cu.action==='search')D.cu.action='detail';(d.cards||[]).forEach(c=>{if(c.type==='coming'&&c.action==='search')c.action='detail'})}
+ return true}
+const DEF=()=>{const d=DEF0();
+ /* SETTINGS TABS: id = fixed internal tab (never change); label = displayed name; array order = tab order. Edited in Settings > Navigation. */
+ d.settingsTabs=[['gen','General'],['nav','Navigation'],['fld','Meeting Fields'],['dsh','Dashboard Settings'],['sea','Search Settings'],['lay','Layout'],['bak','Backup & History'],['ptc','Patch Notes'],['adv','Code / Advanced']].map(([id,label])=>({id,label}));
+d.ovCards=['today','week','month','upcoming','completed','cancelled'].map(k=>({id:'o_'+k,kind:k}));
+ d.versions={cur:APP_VER,list:RELEASES.map(r=>({v:r.v,date:r.date||'',notes:r.notes})),prev:{v:RELEASES[RELEASES.length-2].v,snap:snapOf(d)}};return d};
+let S={cfg:DEF(),meetings:[],view:'dash',mode:null,cur:new Date(),q:'',tab:'gen',fl:null,fast:false,live:false},db=null,cfgRef,mCol;
+const NAVD={dash:'Dashboard',cal:'Calendar',recs:'Meeting Search',set:'Settings'},navLabel=id=>((S.cfg.nav||[]).find(n=>n.id===id)||{}).label||NAVD[id];
+const VF=()=>S.cfg.fields.filter(f=>f.visible!==false); /* fields shown in forms, cards and search filters */
+const F=id=>S.cfg.fields.find(f=>f.id===id);
+const dOf=m=>String(m.v.date||'').slice(0,10),
+ tOf=(m,k)=>{const d=String(m.v.date||'');return k==='start'?(d.length>10?d.slice(11,16):m.v.start||''):(m.v.end||'')},
+ endDt=m=>{const d=dOf(m);return d?new Date(d+'T'+(tOf(m,'end')||tOf(m,'start')||'23:59')):null},
+ stat=m=>m.status==='cancelled'?'cancelled':(endDt(m)&&endDt(m)<new Date()?'completed':'upcoming'),
+ key=m=>dOf(m)+tOf(m,'start'),sorted=a=>[...a].sort((x,y)=>key(x)<key(y)?-1:1);
+const ft=t=>{if(!t)return'';let[h,m]=t.split(':').map(Number);return S.cfg.hour12?((h%12)||12)+':'+pad(m)+' '+(h<12?'AM':'PM'):pad(h)+':'+pad(m)};
+/* DATE DISPLAY: format chosen in Settings > General > Date Format (cfg.dateFmt). Calls passing `o` (calendar headings) use the browser locale. */
+const fmtD=s=>{const[y,m,d]=String(s).slice(0,10).split('-');return S.cfg.dateFmt==='MM/DD/YYYY'?m+'/'+d+'/'+y:S.cfg.dateFmt==='YYYY-MM-DD'?y+'-'+m+'-'+d:d+'/'+m+'/'+y};
+const fd=(s,o)=>!s?'No date':o?pd(s).toLocaleDateString(undefined,o):fmtD(s);
+const when=m=>fd(dOf(m))+(tOf(m,'start')?' · '+ft(tOf(m,'start'))+(tOf(m,'end')?' – '+ft(tOf(m,'end')):''):'');
+const title=m=>m.v.title||'Untitled meeting';
+const show=(f,v)=>f.type==='checkbox'?(isT(v)?'Yes':'No'):f.type==='datetime'?String(v).replace('T',' '):f.type==='time'?ft(v):f.type==='date'?fd(v):v;
+const isT=v=>v===true||['true','yes','on','1'].includes(String(v).toLowerCase());
+function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',3200)}
+/* STORAGE: saveCfg writes settings (cfg) and keeps up to 15 history versions; saveM/delM write meeting records.
+   Shared via the page's db capability. Change the history length in saveCfg (.slice(0,15)). */
+const clone=o=>JSON.parse(JSON.stringify(o));
+/* SETTINGS SAVE SYSTEM. While Settings is open, edits only change the working copy S.cfg (a draft); S.saved is the last stored copy.
+   isDirty() compares them, which enables the Save Changes button. persist() really stores settings (and a history entry).
+   Outside Settings (e.g. Fast Edit on the Dashboard) saveCfg stores immediately. */
+const strip=c=>{const o={...c};delete o.history;return JSON.stringify(o)},isDirty=()=>strip(S.cfg)!==strip(S.saved);
+function persist(c,note){c.history=[{ts:Date.now(),note:note||'Settings updated',cfg:snapOf(c)},...(c.history||[])].slice(0,15);S.cfg=c;S.saved=clone(c);
+ if(cfgRef)cfgRef.set(clone(c)).catch(()=>toast('Could not save settings (no write access).'));render()}
+function saveCfg(c,note){if(S.view==='set'){S.cfg=c;return render()}persist(c,note)}
+const saveSettings=()=>{persist(clone(S.cfg),'Settings saved');toast('Changes saved.')};
+/* guard(fn): run fn, but if Settings has unsaved changes ask Save / Leave Without Saving / Cancel first */
+function guard(fn){if(S.view!=='set'||!isDirty())return fn();
+ modal(`<h2>Unsaved changes</h2><p>You have unsaved Settings changes. What would you like to do?</p><div class="row"><button class="p" id="g1">Save Changes</button><button class="d" id="g2">Leave Without Saving</button><button id="g3">Cancel</button></div>`);
+ $('#g1').onclick=()=>{saveSettings();close();fn()};$('#g2').onclick=()=>{S.cfg=clone(S.saved);close();fn()};$('#g3').onclick=close}
+const go=v=>{if(v==='set'&&S.view!=='set')return askKey();if(v==='recs'&&S.view!=='recs')resetFilters();S.view=v;S.fast=false;render()};
+window.addEventListener('beforeunload',e=>{if(S.view==='set'&&isDirty()){e.preventDefault();e.returnValue=''}});
+/* RESTORE DEFAULTS: RD maps each Settings tab to the config keys it owns; only those keys are reset (as an unsaved draft). */
+const RD={gen:['name','desc','defView','dateFmt','hour12','weekStart'],nav:['nav','settingsTabs'],fld:['fields'],dsh:['dash','carousel','cards','ovCards'],sea:['search'],lay:['layout']};
+const nextV=v=>{const[a,b]=v.split('.').map(Number);return b>=99?pad(a+1)+'.00':pad(a)+'.'+pad(b+1)};
+/* switchV(): swap with the ONE stored previous version (cfg.versions.prev). The version being left becomes the new stored previous version, so only a
+   single snapshot ever exists. Going back is allowed only to the immediately previous version; there is no multi-version rollback. */
+function switchV(){if(isDirty())return toast('Save or discard your Settings changes first.');const V=S.cfg.versions,t=V.prev;if(!t)return;const back=t.v<V.cur;
+ confirmBox((back?'Roll back to':'Restore')+' version v'+t.v+'?',back?'Roll back':'Restore',()=>{const c=clone(S.cfg),cv=c.versions,cur=cv.cur,now=snapOf(c),keep={versions:cv,history:c.history};
+  Object.keys(c).forEach(k=>delete c[k]);Object.assign(c,{...snapOf(DEF()),...clone(t.snap)},keep);cv.prev={v:cur,snap:now};cv.cur=t.v;persist(c,'Version changed to v'+t.v);toast('Now on version v'+t.v+'.')},
+  `<p>This restores the saved Settings configuration of v${t.v}. Meetings are not affected. The version you are leaving becomes the single stored previous version.</p>`)}
+function saveM(id,data){if(mCol)mCol.doc(id).set(data).catch(()=>toast('Could not save meeting (no write access).'));else{const i=S.meetings.findIndex(m=>m.id===id);i<0?S.meetings.push({id,...data}):S.meetings[i]={id,...data};render()}}
+function delM(id){if(mCol)mCol.doc(id).delete().catch(()=>toast('Could not delete (no write access).'));else{S.meetings=S.meetings.filter(m=>m.id!==id);render()}}
+async function init(){S.saved=clone(S.cfg);S.mode=S.cfg.defView;render();
+ /* ROTATION TIMER: ticks every second on the Dashboard; advances after cfg.carousel.secs seconds. Paused while hovering/focusing the cards, in Fast Edit Mode, or when the tab is hidden. */
+ setInterval(()=>{if(S.view!=='dash'||S.pause||S.fast||document.hidden||slides()<2)return;S.t=(S.t||0)+1;if(S.t>=(S.cfg.carousel.secs||15)){S.t=0;S.slide=(S.slide||0)+1;refreshCar()}},1000);
+ setInterval(()=>{if(S.view!=='dash')return;let re=false;document.querySelectorAll('[data-cut]').forEach(e=>{const ms=+e.dataset.start-Date.now();if(ms<=0)re=true;else e.textContent=cdFmt(ms,+e.dataset.dh,+e.dataset.sh)});if(re)render()},1000); /* Coming Up countdown: updates every second; re-renders when the closest meeting starts so the next one takes over */
+ document.addEventListener('mouseover',e=>{S.pause=!!e.target.closest('#car')});document.addEventListener('focusin',e=>{S.pause=!!e.target.closest('#car')});
+ try{db=window.claude&&await claude.use('db')}catch(e){db=null}
+ if(!db){S.live=false;render();return}
+ S.live=true;cfgRef=db.collection('config').doc('main');mCol=db.collection('meetings');
+ cfgRef.onSnapshot(s=>{if(s.exists){const d={...DEF(),...clone(s.data())},mg=migrate(d),dirty=S.view==='set'&&isDirty();if(mg)cfgRef.set(clone(d)).catch(()=>{});S.saved=clone(d);if(!dirty)S.cfg=d;if(!S.mode||S.first!==1){S.mode=S.cfg.defView;S.first=1}}render()},()=>{});
+ mCol.onSnapshot(q=>{S.meetings=q.docs.map(d=>({id:d.id,...clone(d.data())}));render()},()=>{})}
+/* MODAL: shared pop-up. modal(html) opens it, close() hides it, confirmBox() asks before destructive actions. */
+const modal=h=>{const m=$('#modal');m.innerHTML='<div class="card">'+h+'</div>';m.style.display='flex'},close=()=>{$('#modal').style.display='none'};
+function confirmBox(msg,label,fn,extra){modal(`<h2>${esc(msg)}</h2>${extra||''}<div class="row" style="margin-top:14px"><button data-x="close">Cancel</button><button class="d" id="cf">${label}</button></div>`);$('#cf').onclick=()=>{const r=$('#cr');close();fn(r?r.value:'')}}
+/* MEETING FORM & CARDS: form() builds the Add/Edit form from visible fields (order = cfg.fields order; input kind = field type).
+   card() draws one meeting row; edit its markup to change what each list item shows. */
+function input(f,v,id){const a=`data-f="${f.id}" id="${id||''}"`;
+ if(f.type==='longtext')return`<textarea ${a} rows="3">${esc(v)}</textarea>`;
+ if(f.type==='dropdown'){const o=[...f.options];if(v&&!o.includes(v))o.push(v);return`<select ${a}><option value="">— Select —</option>${o.map(x=>`<option ${x===v?'selected':''}>${esc(x)}</option>`).join('')}</select>`}
+ if(f.type==='checkbox')return`<input type="checkbox" ${a} ${isT(v)?'checked':''}>`;
+ let val=v??'';if(f.type==='datetime'&&val&&String(val).length===10)val+='T09:00';if(f.type==='date')val=String(val).slice(0,10);
+ return`<input type="${INP[f.type]||'text'}" ${a} value="${esc(val)}">`}
+/* form(m, pre): m = meeting to edit (omit to add); pre = 'YYYY-MM-DD' pre-filled into the Date field (used by calendar double-click). */
+function form(m,pre){const v=m?m.v:(pre?{date:pre}:{});modal(`<h2>${m?'Edit':'Add'} meeting</h2>${VF().map(f=>`<label>${esc(f.label)}${f.required?' *':''}</label>${input(f,v[f.id])}`).join('')||'<p class="muted">No fields configured. Add fields in Settings.</p>'}
+ <div class="row" style="margin-top:14px"><button data-x="close">Cancel</button><button class="p" id="sv">Save meeting</button></div>`);
+ $('#sv').onclick=()=>{const nv={...v};let bad=null;VF().forEach(f=>{const e=document.querySelector(`#modal [data-f="${f.id}"]`);const x=f.type==='checkbox'?e.checked:e.value.trim();nv[f.id]=x;if(f.required&&(x===''||x===false)&&!bad)bad=f});
+  if(bad)return toast(bad.label+' is required.');
+  saveM(m?m.id:uid(),{v:nv,status:m?m.status:'scheduled',reason:m?m.reason||'':'',created:m?m.created:Date.now()});close()}}
+function detail(id){const m=S.meetings.find(x=>x.id===id);if(!m)return;const s=stat(m);
+ modal(`<h2>${esc(title(m))}<span class="badge ${s}">${s}</span></h2><p class="muted">${esc(when(m))}</p>
+ ${VF().filter(f=>!['title','date','start','end'].includes(f.id)&&m.v[f.id]!==''&&m.v[f.id]!=null).map(f=>`<p><b>${esc(f.label)}:</b> ${esc(show(f,m.v[f.id]))}</p>`).join('')}
+ ${m.status==='cancelled'&&m.reason?`<p><b>Cancellation reason:</b> ${esc(m.reason)}</p>`:''}
+ <div class="row" style="margin-top:14px"><button data-x="close">Close</button><button data-edit="${id}">Edit</button>${m.status==='cancelled'?`<button data-restore="${id}">Reinstate</button>`:`<button class="d" data-cancel="${id}">Cancel meeting</button>`}<button class="d" data-del="${id}">Delete</button></div>`)}
+const card=m=>{const s=stat(m),d=dOf(m)?pd(dOf(m)):null;return`<div class="mt ${s}" data-open="${m.id}"><div class="dt"><b>${d?d.getDate():'–'}</b><span>${d?d.toLocaleDateString(undefined,{month:'short'}):'n/a'}</span></div><div class="mb"><b>${esc(title(m))}</b><span class="badge ${s}">${s}</span><small>${esc(when(m))}</small><small>${[m.v.location,m.v.organizer,m.v.department].filter(Boolean).map(esc).join(' · ')}</small></div></div>`};
+/* DASHBOARD: counts() computes the six totals; BL defines the three always-visible sections (stats, upcoming, today);
+   dash() renders them in cfg.layout.order with widths cfg.layout.w. Fast Edit adds the drag/arrow/width controls. */
+function counts(){const now=new Date(),t=ymd(now),ws=addD(now,-((now.getDay()-S.cfg.weekStart+7)%7)),a=ymd(ws),b=ymd(addD(ws,6)),act=S.meetings.filter(m=>m.status!=='cancelled');
+ return[['Today',act.filter(m=>dOf(m)===t).length],['This week',act.filter(m=>dOf(m)>=a&&dOf(m)<=b).length],['This month',act.filter(m=>dOf(m).slice(0,7)===t.slice(0,7)).length],['Upcoming',S.meetings.filter(m=>stat(m)==='upcoming').length],['Completed',S.meetings.filter(m=>stat(m)==='completed').length],['Cancelled',S.meetings.filter(m=>m.status==='cancelled').length]]}
+/* ===================== CUSTOM DASHBOARD CARDS + ROTATING CAROUSEL =====================
+ A card = one Meeting Form field (or Status) + one value. Its number is how many meetings match, using the same rules as the
+ Meeting Search filters (passF). Choices are generated from cfg.fields, so new fields appear automatically. If a field is deleted,
+ hidden, or its type no longer fits the saved value, cardOK() is false: the card is skipped on the Dashboard and flagged in the
+ admin list so it can be edited or deleted. Rotation: cfg.carousel.secs (seconds) and cfg.carousel.per (cards per slide).
+ Look: .cs (slide grid), .cn (arrows), .dot (indicators) in the CSS; fade length is the `cf` animation. */
+const fullOrd=a=>[...a.filter(k=>BL[k]),...Object.keys(BL).filter(k=>!a.includes(k))]; /* adds sections missing from older saved layouts */
+function rangeOf(k){const n=new Date(),t=ymd(n),ws=addD(n,-((n.getDay()-S.cfg.weekStart+7)%7));
+ return{today:[t,t],week:[ymd(ws),ymd(addD(ws,6))],month:[ymd(new Date(n.getFullYear(),n.getMonth(),1)),ymd(new Date(n.getFullYear(),n.getMonth()+1,0))]}[k]}
+const cfield=c=>c.field==='_status'?{type:'status',label:'Status'}:F(c.field);
+function cardOK(c){if(c.type==='coming')return true;const f=cfield(c);if(!f||f.visible===false)return false;const t=f.type;if(c.metric==='custom'&&!c.value)return true;
+ if(t==='status')return['upcoming','completed','cancelled'].includes(c.value);
+ if(t==='date'||t==='datetime')return['today','week','month'].includes(c.value);
+ if(t==='checkbox')return['yes','no'].includes(c.value);return c.value!==''&&c.value!=null}
+const cardsOf=()=>(S.cfg.cards||[]).filter(c=>c.enabled!==false&&cardOK(c));
+const cardValue=c=>c.metric==='custom'?esc(c.custom||''):c.metric==='percent'?(S.meetings.length?Math.round(cardCount(c)*100/S.meetings.length):0)+'%':cardCount(c);
+const ICONS=[['','None'],['📅','📅 Calendar'],['🏢','🏢 Department'],['👥','👥 People'],['📍','📍 Location'],['✅','✅ Done'],['⏱','⏱ Time'],['⚠','⚠ Attention'],['📌','📌 Pinned'],['📊','📊 Statistics']];
+function cardTitle(c){if(c.title)return c.title;if(c.type==='coming')return'Coming Up';const f=cfield(c),L={today:'Today',week:'This week',month:'This month',yes:'Yes',no:'No',upcoming:'Upcoming',completed:'Completed',cancelled:'Cancelled'}[c.value]||c.value;return(f?f.label:'Removed field')+': '+L}
+function cardSpec(c){const t=cfield(c).type;if(t==='date'||t==='datetime'){const r=rangeOf(c.value);return{a:r[0],b:r[1]}}return{a:c.value}}
+function cardCount(c){const keep=S.fl;S.fl={active:[c.field],vals:{[c.field]:cardSpec(c)}};try{return S.meetings.filter(passF).length}finally{S.fl=keep}}
+/* openCustom: runs a card's Click action (c.action): search = Meeting Search with the card's filter, recs = Meeting Search defaults, calendar, add, none */
+function openCustom(id){const c=[...(S.cfg.cards||[]),...(S.cfg.ovCards||[]),cuCard()].find(x=>x.id===id);if(!c||!cardOK(c))return;const a=c.action||(c.link===false?'none':'search');
+ if(a==='none')return;if(a==='add')return form();if(a==='calendar'){S.view='cal'}else if(a==='recs'){resetFilters();S.view='recs'}else if(c.type==='coming'){S.fl={active:['_status'],vals:{_status:{a:'upcoming'}}};S.view='recs'}else{S.fl={active:[c.field],vals:{[c.field]:cardSpec(c)}};S.view='recs'}
+ S.q='';$('#hq').value='';render()}
+const perView=()=>Math.max(1,Math.min(4,+S.cfg.carousel.per||3)),chunk=()=>S.cfg.dash.layout==='grid'?Math.max(1,cardsOf().length):perView(),slides=()=>Math.max(1,Math.ceil(cardsOf().length/chunk()));
+/* carHTML: draws the visible slide. Per-card look comes from the card record (title, subtitle, support, icon, metric, show, w = width columns,
+   h = height px); spacing/alignment/density come from cfg.dash. In Fast Edit Mode each card gets an Edit button and a corner drag handle (.rh). */
+function cardTile(c){if(c.type==='coming')return comingTile(c);const sh=c.show||{},a=c.action||(c.link===false?'none':'search'),
+ t=(c.icon&&sh.icon!==false?`<i class="ci">${esc(c.icon)}</i>`:'')+(sh.value!==false?`<b>${cardValue(c)}</b>`:'')+`<span>${esc(cardTitle(c))}</span>`+(c.subtitle&&sh.subtitle!==false?`<em>${esc(c.subtitle)}</em>`:'')+(c.support&&sh.support!==false?`<small>${esc(c.support)}</small>`:'');
+ return a==='none'?`<div class="stat cc plain">${t}</div>`:`<button class="stat cc" data-cc="${c.id}">${t}</button>`}
+function carHTML(){const all=cardsOf(),per=perView(),ck=chunk(),n=slides(),D=S.cfg.dash;S.slide=(((S.slide||0)%n)+n)%n;
+ if(!all.length)return'<p class="muted">No dashboard cards yet.'+(S.fast?' Use “+ Add Dashboard Card” below.':'')+'</p>';
+ const cc=c=>`<div class="cw" style="grid-column:span ${Math.min(c.w||1,per)};min-height:${c.h||D.ch||0}px">${cardTile(c)}${S.fast?`<button class="ce" data-cardedit="${c.id}">✎ Edit</button><span class="rh" data-rz="${c.id}" title="Drag to resize"></span>`:''}</div>`;
+ return`<div class="cs ${D.align==='center'?'ctr':''} ${D.density==='compact'?'cmp':''}" style="--per:${per};gap:${+D.gap||0}px">${all.slice(S.slide*ck,S.slide*ck+ck).map(cc).join('')}</div>`+(n>1?`<div class="cn"><button data-cs="-1" aria-label="Previous cards">‹</button><span class="dots">${[...Array(n)].map((_,i)=>`<button class="dot ${i===S.slide?'on':''}" data-cs="=${i}" aria-label="Show slide ${i+1} of ${n}"></button>`).join('')}</span><button data-cs="1" aria-label="Next cards">›</button></div>`:'')}
+const refreshCar=()=>{const e=$('#car');if(e)e.innerHTML=carHTML()};
+/* cardAdmin: list + rotation controls, used in Fast Edit Mode (inside the Dashboard) and in Settings > Dashboard Cards */
+function cardAdmin(fast){const cs=S.cfg.cards||[],ca=S.cfg.carousel;
+ return`<div class="${fast?'fb':''}" style="margin-top:12px;display:block"><div class="row"><button class="p" data-cardadd="1">+ Add Dashboard Card</button><label style="margin:0;display:flex;gap:6px;align-items:center">Rotate every <input type="number" min="5" max="120" data-secs="1" value="${ca.secs||15}" style="width:76px"> seconds</label></div>${cs.map((c,i)=>`<div class="row" style="margin-top:6px"><label class="ck" style="margin:0"><input type="checkbox" data-ce="${c.id}" ${c.enabled!==false?'checked':''} aria-label="Enabled"></label><span class="g">${esc(cardTitle(c))}${cardOK(c)?'':' <i class="muted">(unavailable)</i>'}</span><button data-cm="${c.id}:-1" ${i?'':'disabled'} aria-label="Move up">▲</button><button data-cm="${c.id}:1" ${i<cs.length-1?'':'disabled'} aria-label="Move down">▼</button><button data-cardedit="${c.id}">Edit</button><button class="d" data-carddel="${c.id}">Delete</button></div>`).join('')}</div>`}
+/* valCtl: the value input for the chosen field type (dropdown options come straight from Settings > Meeting Fields) */
+function valCtl(fid,cur){const f=fid==='_status'?{type:'status'}:F(fid),t=f.type,sel=o=>`<select id="c_val">${optsOf(o,cur)}</select>`;
+ if(t==='status')return sel([['upcoming','Upcoming'],['completed','Completed'],['cancelled','Cancelled']]);
+ if(t==='dropdown')return f.options.length?sel(f.options.map(x=>[x,x])):'<p class="muted">This dropdown has no options yet. Add them in Settings > Meeting Fields.</p><input type="hidden" id="c_val" value="">';
+ if(t==='checkbox')return sel([['yes','Yes'],['no','No']]);
+ if(t==='date'||t==='datetime')return sel([['today','Today'],['week','This week'],['month','This month']]);
+ return`<input id="c_val" type="${t==='number'?'number':t==='time'?'time':'text'}" value="${esc(cur||'')}" placeholder="${t==='number'||t==='time'?'Minimum value':'Contains…'}">`}
+/* cardBox: the Edit Card dialog. Filter condition = field (c.field), Filter value = c.value, Metric = c.metric, Click action = c.action,
+   Width = c.w (columns), Height = c.h (px), and the "Show on card" tick-boxes = c.show. */
+function cardBox(id,key){key=key||'cards';const old=(S.cfg[key]||[]).find(x=>x.id===id)||{},ty=old.type||'metric',fs=[...VF().map(f=>[f.id,f.label]),['_status','Status']],fid=fs.some(x=>x[0]===old.field)?old.field:fs[0][0],sh=old.show||{},U=old.cu||{},uf=U.fields||['location','organizer','department'],
+ ck=(i,l,v)=>`<label class="ck"><input type="checkbox" id="${i}" ${v?'checked':''}> ${l}</label>`,tx=(i,l,v,x)=>`<div><label>${l}</label><input id="${i}" value="${esc(v||'')}" ${x||''}></div>`;
+ modal(`<h2>${id?'Edit':'Add'} dashboard card</h2><div class="two"><div><label>Card type</label><select id="c_ty">${optsOf([['metric','Meeting count'],['coming','Coming Up (next meetings)']],ty)}</select></div>${tx('c_t','Card title',old.title,'placeholder="Automatic"')}</div>
+ <div id="x_std" ${ty==='coming'?'hidden':''}><div class="two"><div><label>Filter condition (field)</label><select id="c_f">${optsOf(fs,fid)}</select></div><div><label>Filter value</label><div id="c_v">${valCtl(fid,old.value)}</div></div>
+ <div><label>Metric</label><select id="c_m">${optsOf([['count','Number of meetings'],['percent','Share of all meetings'],['custom','Custom text']],old.metric||'count')}</select></div>${tx('c_cu','Main displayed value (used by Custom text)',old.custom)}${tx('c_st','Subtitle',old.subtitle)}${tx('c_su','Supporting text',old.support)}</div>
+ <h3>Show on card</h3><div class="row">${ck('c_sv','Value',sh.value!==false)}${ck('c_ss','Subtitle',sh.subtitle!==false)}${ck('c_sp','Supporting text',sh.support!==false)}${ck('c_si','Icon',sh.icon!==false)}</div></div>
+ <div id="x_cu" ${ty==='coming'?'':'hidden'}><div class="two"><div><label>Number of meetings (1-4)</label><select id="u_n">${optsOf([1,2,3,4].map(x=>[x,x]),U.count||3)}</select></div><div><label>Card layout</label><select id="u_l">${optsOf([['featured','Featured (large countdown)'],['compact','Compact']],U.layout||'featured')}</select></div>
+ ${tx('u_dh','Show days only when more than (hours away)',U.dayHours||24,'type="number" min="1" max="720"')}${tx('u_sh','Show minutes and seconds within (hours)',U.secHours||7,'type="number" min="1" max="720"')}</div>
+ <h3>Displayed meeting information</h3><p class="muted">Title, date, time and the countdown always show. Tick any extra details to include.</p><div class="row">${VF().filter(f=>!['title','date','start','end'].includes(f.id)).map(f=>`<label class="ck"><input type="checkbox" data-uf="${f.id}" ${uf.includes(f.id)?'checked':''}> ${esc(f.label)}</label>`).join('')}</div></div>
+ <h3>Appearance and action</h3><div class="two"><div><label>Icon</label><select id="c_i">${optsOf(ICONS,old.icon||'')}</select></div>
+ <div><label>Click action</label><select id="c_a">${optsOf([['search','Meeting Search with this filter (Coming Up: upcoming meetings)'],['recs','Meeting Search (default filters)'],['calendar','Open Calendar'],['add','Add a meeting'],['detail','Open the clicked meeting’s details (Coming Up)'],['none','No action (not clickable)']],old.action||(old.link===false?'none':'search'))}</select></div>
+ ${tx('c_w','Width (columns, 1-4)',old.w||(ty==='coming'?2:1),'type="number" min="1" max="4"')}${tx('c_h','Height (px, 0 = automatic)',old.h||0,'type="number" min="0" max="400"')}</div>${ck('c_en','Enabled',old.enabled!==false)}
+ <p class="muted">Tip: in Fast Edit Mode you can also drag the corner of a card to resize it.</p><div class="row" style="margin-top:10px"><button data-x="close">Cancel</button><button class="p" id="c_s">Save card</button></div>`);
+ $('#c_f').onchange=()=>{$('#c_v').innerHTML=valCtl($('#c_f').value,'')};
+ $('#c_ty').onchange=()=>{const cu=$('#c_ty').value==='coming';$('#x_std').hidden=cu;$('#x_cu').hidden=!cu;if(cu&&+$('#c_w').value<2)$('#c_w').value=2;if(cu&&$('#c_a').value==='search')$('#c_a').value='detail'};
+ $('#c_s').onclick=()=>{const t=$('#c_ty').value,c=clone(S.cfg);c[key]=c[key]||[];
+  const n={id:old.id||'c_'+uid(),type:t,title:$('#c_t').value.trim(),icon:$('#c_i').value,action:$('#c_a').value,w:Math.max(1,Math.min(4,+$('#c_w').value||1)),h:Math.max(0,Math.min(400,+$('#c_h').value||0)),enabled:$('#c_en').checked};
+  if(t==='coming'){const dh=Math.max(1,+$('#u_dh').value||24);n.cu={count:Math.max(1,Math.min(4,+$('#u_n').value||3)),layout:$('#u_l').value,dayHours:dh,secHours:Math.min(dh,Math.max(1,+$('#u_sh').value||7)),fields:[...document.querySelectorAll('#modal [data-uf]')].filter(e=>e.checked).map(e=>e.dataset.uf)}}
+  else{const v=$('#c_val').value.trim(),m=$('#c_m').value;if(!v&&m!=='custom')return toast('Choose or enter a filter value.');Object.assign(n,{field:$('#c_f').value,value:v,metric:m,custom:$('#c_cu').value.trim(),subtitle:$('#c_st').value.trim(),support:$('#c_su').value.trim(),show:{value:$('#c_sv').checked,subtitle:$('#c_ss').checked,support:$('#c_sp').checked,icon:$('#c_si').checked}})}
+  const i=c[key].findIndex(x=>x.id===n.id);i<0?c[key].push(n):c[key][i]=n;close();saveCfg(c,'Dashboard card saved')}}
+/* OVERVIEW CARDS -> MEETING SEARCH.
+   CARDKEYS = card ids in the same order as counts(). openCard(key) decides which Meeting Search filter each card applies:
+   upcoming/completed/cancelled -> Status = that value; today/week/month -> Date range (week starts on cfg.weekStart).
+   To change a card's destination, edit openCard(). Cards do nothing while Fast Edit Mode is on (so they can be dragged). */
+const CARDKEYS=['today','week','month','upcoming','completed','cancelled'];
+function openCard(k){
+ if(['upcoming','completed','cancelled'].includes(k))S.fl={active:['_status'],vals:{_status:{a:k}}};
+ else{const f=VF().find(x=>x.id==='date'&&['date','datetime'].includes(x.type))||VF().find(x=>['date','datetime'].includes(x.type));
+  if(!f)return toast('Add a visible Date field in Settings to use this card.');
+  const r=rangeOf(k);
+  S.fl={active:[f.id],vals:{[f.id]:{a:r[0],b:r[1]}}}}
+ S.q='';$('#hq').value='';S.view='recs';render()}
+/* OVERVIEW CARDS: cfg.ovCards is a list of any length. {kind} = one of the six built-in counts; otherwise a custom card (same fields as a dashboard card). Add/delete in Fast Edit Mode. */
+const OVN={today:'Today',week:'This week',month:'This month',upcoming:'Upcoming',completed:'Completed',cancelled:'Cancelled'};
+function ovAdmin(){return`<div class="fb" style="display:block;margin-top:12px"><div class="row"><button class="p" data-ovadd="1">+ Add Overview Card</button><span class="muted">Manage, reorder or delete overview cards in Settings &gt; Dashboard Settings &gt; Overview Cards.</span></div></div>`}
+/* COMING UP CARD (a Dashboard Card type, c.type==='coming'; there is no separate section). Uses the normal meeting records.
+   cuList(n): the next n non-cancelled meetings whose start is still in the future, earliest first. Only the first gets a live countdown.
+   Card settings c.cu: count (1-4 meetings) | layout 'featured'|'compact' | fields (extra details) | dayHours (show "N Days" only when MORE than this many hours away, default 24)
+   | secHours (show minutes+seconds only WITHIN this many hours, default 7; between the two: hours and minutes). Title c.title, icon c.icon, click c.action, size c.w/c.h. */
+const cuStart=m=>new Date(dOf(m)+'T'+(tOf(m,'start')||'00:00'));
+const cuList=n=>{const now=new Date();return S.meetings.filter(m=>m.status!=='cancelled'&&dOf(m)&&cuStart(m)>now).sort((a,b)=>cuStart(a)-cuStart(b)||(key(a)<key(b)?-1:1)).slice(0,n)};
+function cdFmt(ms,dh,sh){ms=Math.max(0,ms);const H=3600000;if(ms>dh*H){const d=Math.max(1,Math.floor(ms/86400000));return d+(d===1?' Day':' Days')}
+ const x=Math.floor(ms/1000),h=Math.floor(x/3600),m=Math.floor(x%3600/60),sc=x%60;return ms>sh*H?h+'h '+pad(m)+'m':(h?h+'h ':'')+pad(m)+'m '+pad(sc)+'s'}
+/* cuCard(): the Coming Up DASHBOARD SECTION is drawn by the same renderer as the Coming Up card type, fed from cfg.dash.cu
+   (count, layout, fields, dayHours, secHours, icon, action). Edit it in Settings > Dashboard Settings > Coming Up. */
+const cuCard=()=>{const U=S.cfg.dash.cu||{};return{id:'cu_sec',type:'coming',nohead:true,icon:U.icon||'',action:U.action||'search',cu:U}};
+function comingTile(c){const U=c.cu||{},n=Math.max(1,Math.min(4,+U.count||3)),dh=+U.dayHours||24,sh=+U.secHours||7,ids=U.fields||['location','organizer','department'],L=cuList(n),a=c.action||'search',dm=a==='detail',
+ det=m=>VF().filter(f=>ids.includes(f.id)&&!['title','date','start','end'].includes(f.id)&&m.v[f.id]!==''&&m.v[f.id]!=null).map(f=>esc(show(f,m.v[f.id]))),
+ head=c.nohead?(c.icon?`<span class="cu-h"><i class="ci">${esc(c.icon)}</i></span>`:''):`<span class="cu-h">${c.icon?`<i class="ci">${esc(c.icon)}</i>`:''}${esc(cardTitle(c))}</span>`;let body;
+ if(!L.length)body='<span class="cu-empty">No upcoming meetings.</span>';
+ else{const m=L[0],st=cuStart(m).getTime();
+  body=`<span class="cu-main"${dm?` data-open="${m.id}" tabindex="0" role="button" aria-label="Open meeting details"`:''}><span class="cu-cd"><small>Starts in</small><b data-cut data-start="${st}" data-dh="${dh}" data-sh="${sh}">${cdFmt(st-Date.now(),dh,sh)}</b></span><span class="cu-in"><strong>${esc(title(m))}</strong><em>${esc(when(m))}</em>${det(m).map(x=>`<small>${x}</small>`).join('')}</span></span>`
+   +(L.length>1?`<span class="cu-list">${L.slice(1).map(m=>`<span class="cu-row"${dm?` data-open="${m.id}" tabindex="0" role="button"`:''}><span class="cu-d">${esc(fd(dOf(m)))}${tOf(m,'start')?' · '+esc(ft(tOf(m,'start'))):''}</span><span class="cu-t">${esc(title(m))}</span>${det(m).length?`<small>${det(m).join(' · ')}</small>`:''}</span>`).join('')}</span>`:'')}
+ const cls='stat cc cu2'+(U.layout==='compact'?' cmp2':'');
+ return a==='none'||dm?`<div class="${cls} plain">${head}${body}</div>`:`<button class="${cls}" data-cc="${c.id}">${head}${body}</button>`}
+const DT=k=>((S.cfg.dash||{}).titles||{})[k]||BL[k][0]; /* section title shown on the Dashboard: Settings > Dashboard Settings > Appearance */
+const BL={coming:['Coming Up',()=>`<div class="cw">${cardTile(cuCard())}</div>`],cards:['Announcement',()=>`<div id="car">${carHTML()}</div>${S.fast?cardAdmin(true):''}`],stats:['Overview',()=>{const m=Object.fromEntries(counts().map((c,i)=>[CARDKEYS[i],c])),L=(S.cfg.ovCards||[]).filter(o=>o.enabled!==false&&(o.kind?m[o.kind]:cardOK(o)));
+  return`<div class="stats">${L.map(o=>o.kind?`<button class="stat" data-card="${o.kind}" aria-label="${m[o.kind][0]}: ${m[o.kind][1]}. Open in Meeting Search"><b>${m[o.kind][1]}</b><span>${m[o.kind][0]}</span></button>`:cardTile(o)).join('')||'<p class="muted">No overview cards.</p>'}</div>${S.fast?ovAdmin():''}`}],
+ upcoming:['Upcoming meetings',()=>{const u=sorted(S.meetings.filter(m=>stat(m)==='upcoming')).slice(0,8);return u.length?u.map(card).join(''):'<p class="muted">No upcoming meetings.</p>'}],
+ today:["Today's schedule",()=>{const t=ymd(new Date()),u=sorted(S.meetings.filter(m=>dOf(m)===t));return u.length?u.map(card).join(''):'<p class="muted">No meetings today.</p>'}]};
+const WS=[[4,'S'],[6,'M'],[8,'L'],[12,'Full']];
+function dash(){const L=S.cfg.layout;return`<div class="grid" id="lay">${fullOrd(L.order).filter(k=>S.cfg.dash.visible[k]!==false).filter(k=>k!=='cards'||S.fast||cardsOf().length).map((k,i)=>`<section class="card blk ${S.fast?'fe':''}" style="--w:${L.w[k]||12}" data-blk="${k}" ${S.fast?'draggable="true"':''}>
+ ${S.fast?`<div class="fb"><button data-mv="${k}:-1" title="Move left">◀</button><button data-mv="${k}:1" title="Move right">▶</button><button data-mv="${k}:-2" title="Move up">▲</button><button data-mv="${k}:2" title="Move down">▼</button>${WS.map(w=>`<button data-w="${k}:${w[0]}" class="${(L.w[k]||12)===w[0]?'p':''}">${w[1]}</button>`).join('')}</div>`:''}
+ <h2>${esc(DT(k))}</h2>${BL[k][1]()}</section>`).join('')}</div>`}
+/* CALENDAR: calView() draws Month/Week/Day/Agenda. S.mode = view, S.cur = date shown. Edit the month grid markup here to change how meetings appear on the calendar. */
+function calView(){const c=S.cur,m=S.mode==='agenda'?'agenda':S.mode,wsd=S.cfg.weekStart;let body='',label='';
+ const on=d=>sorted(S.meetings.filter(x=>dOf(x)===ymd(d)));
+ const weekStart=d=>addD(d,-((d.getDay()-wsd+7)%7));
+ if(m==='month'){label=c.toLocaleDateString(undefined,{month:'long',year:'numeric'});const f=weekStart(new Date(c.getFullYear(),c.getMonth(),1));
+  body='<div class="sc"><div class="mg">'+[...Array(7)].map((_,i)=>`<div class="h">${addD(f,i).toLocaleDateString(undefined,{weekday:'short'})}</div>`).join('')+[...Array(42)].map((_,i)=>{const d=addD(f,i),l=on(d);return`<div data-date="${ymd(d)}" class="cell ${d.getMonth()!==c.getMonth()?'o':''} ${ymd(d)===ymd(new Date())?'t':''}"><b>${d.getDate()}</b>${l.slice(0,3).map(x=>`<span class="chip ${x.status==='cancelled'?'cancelled':''}" data-open="${x.id}">${esc(ft(tOf(x,'start')))} ${esc(title(x))}</span>`).join('')}${l.length>3?`<a href="#" data-day="${ymd(d)}">+${l.length-3} more</a>`:''}</div>`}).join('')+'</div></div>'}
+ else if(m==='week'){const f=weekStart(c);label=fd(ymd(f),{month:'short',day:'numeric'})+' – '+fd(ymd(addD(f,6)),{month:'short',day:'numeric',year:'numeric'});
+  body='<div class="wk">'+[...Array(7)].map((_,i)=>{const d=addD(f,i);return`<div class="card" data-date="${ymd(d)}"><b>${fd(ymd(d),{weekday:'short',month:'short',day:'numeric'})}</b>${on(d).map(card).join('')||'<p class="muted">—</p>'}</div>`}).join('')+'</div>'}
+ else if(m==='day'){label=fd(ymd(c),{weekday:'long',year:'numeric',month:'long',day:'numeric'});body=`<div data-date="${ymd(c)}" style="min-height:140px">${on(c).map(card).join('')||'<p class="muted">No meetings on this day.</p>'}</div>`}
+ else{label='From '+fd(ymd(c));const a=sorted(S.meetings.filter(x=>dOf(x)>=ymd(c)&&dOf(x)<=ymd(addD(c,60))));let last='';body=a.map(x=>{const h=dOf(x)!==last?`<h2 style="margin-top:12px">${fd(dOf(x))}</h2>`:'';last=dOf(x);return h+card(x)}).join('')||'<p class="muted">No meetings in the next 60 days.</p>'}
+ return`<div class="card"><div class="row" style="margin-bottom:10px"><button data-nav="-1">◀ Prev</button><button data-nav="0">Today</button><button data-nav="1">Next ▶</button><input type="date" id="jump" value="${ymd(c)}" style="width:auto" aria-label="Jump to date"><b class="g">${esc(label)}</b>
+ ${['month','week','day','agenda'].map(v=>`<button data-mode="${v}" class="${m===v?'p':''}">${v[0].toUpperCase()+v.slice(1)}</button>`).join('')}</div><p class="muted" style="margin:0 0 8px;font-size:.85rem">Tip: double-click a day to add a meeting.</p>${body}</div>`}
+/* ===================== MEETING SEARCH =====================
+ Active filters have no remove button on purpose: filters are added or removed ONLY through the Filter button (filterBox()).
+ Filters come from the Meeting Fields configuration (Settings > Meeting Fields), so renaming a field, changing its type
+ or editing its dropdown options there immediately changes the filter shown here. Nothing is hard-coded.
+ S.fl.active = filter ids currently shown (starts from cfg.search.defaultFilters); S.fl.vals = what the user picked. */
+const FK=()=>[...VF().map(f=>({id:f.id,label:f.label})),{id:'_status',label:'Status'}];
+function resetFilters(){S.fl={active:S.cfg.search.defaultFilters.filter(id=>FK().some(k=>k.id===id)),vals:{}}}
+/* passF: true if meeting m satisfies every active filter. Behaviour depends on the field TYPE. */
+function passF(m){for(const id of S.fl.active){const v=S.fl.vals[id]||{};
+ if(id==='_status'){if(v.a&&stat(m)!==v.a)return false;continue}
+ const f=F(id);if(!f)continue;const x=m.v[id],t=f.type;
+ if(t==='dropdown'){if(v.a&&x!==v.a)return false}
+ else if(t==='checkbox'){if(v.a&&(isT(x)?'yes':'no')!==v.a)return false}
+ else if(['date','datetime','time','number'].includes(t)){const n=t==='number',y=n?(x===''||x==null?NaN:+x):String(x||'').slice(0,t==='time'?5:10),lo=v.a||'',hi=v.b||'';
+  if(n){if(lo!==''&&!(y>=+lo))return false;if(hi!==''&&!(y<=+hi))return false}else{if(lo&&!(y&&y>=lo))return false;if(hi&&!(y&&y<=hi))return false}}
+ else if(v.a&&!String(x||'').toLowerCase().includes(v.a.toLowerCase()))return false}
+ return true}
+/* fctl: builds the input for one active filter, chosen by field type. Dropdown options = f.options from Settings. */
+function fctl(id){const f=F(id),v=S.fl.vals[id]||{},t=id==='_status'?'status':f.type,L=id==='_status'?'Status':f.label,a=`data-fv="${id}"`;
+ const rng=ty=>`<div class="row"><input type="${ty}" ${a} data-vk="a" value="${esc(v.a||'')}" aria-label="${esc(L)} from" style="width:46%"><span>to</span><input type="${ty}" ${a} data-vk="b" value="${esc(v.b||'')}" aria-label="${esc(L)} to" style="width:46%"></div>`;let c;
+ if(['status','dropdown','checkbox'].includes(t)){const o=t==='status'?['upcoming','completed','cancelled'].map(x=>[x,x[0].toUpperCase()+x.slice(1)]):t==='checkbox'?[['yes','Yes'],['no','No']]:f.options.map(x=>[x,x]);
+  c=`<select ${a} data-vk="a"><option value="">Select ${esc(L)}…</option>${o.map(x=>`<option value="${esc(x[0])}" ${v.a===x[0]?'selected':''}>${esc(x[1])}</option>`).join('')}</select>`}
+ else if(t==='date'||t==='datetime')c=rng('date');else if(t==='time')c=rng('time');else if(t==='number')c=rng('number');
+ else c=`<input type="search" ${a} data-vk="a" value="${esc(v.a||'')}" placeholder="Contains…">`;
+ return`<div class="fc"><label>${esc(L)}</label>${c}</div>`}
+/* recList: header search text (limited to fields not in cfg.search.exclude) AND all active filters. */
+function recList(){const q=S.q.toLowerCase().trim(),sc=VF().filter(f=>!S.cfg.search.exclude.includes(f.id));
+ const a=sorted(S.meetings).filter(m=>passF(m)&&(!q||sc.some(f=>String(m.v[f.id]??'').toLowerCase().includes(q))));
+ return`<p class="muted" style="margin-top:0">${a.length} meeting${a.length===1?'':'s'} found</p>`+a.map(card).join('')}
+function filterBox(){modal(`<h2>Choose filters</h2><p class="muted">Only checked filters appear on the Meeting Search page.</p>${FK().map(k=>`<label class="ck"><input type="checkbox" data-ff="${k.id}" ${S.fl.active.includes(k.id)?'checked':''}> ${esc(k.label)}</label>`).join('')}<div class="row" style="margin-top:14px"><button data-x="close">Cancel</button><button class="p" id="fap">Apply</button></div>`);
+ $('#fap').onclick=()=>{S.fl.active=FK().map(k=>k.id).filter(id=>document.querySelector(`#modal [data-ff="${id}"]`).checked);if(!S.fl.active.length){resetFilters();toast('No filters selected. Default filters restored.')}close();render()}}
+const recs=()=>{if(!S.fl)resetFilters();return`<div class="card"><div class="row"><h2 class="g" style="margin:0">Filters</h2><button data-act="filt">Filter</button><button class="p" data-act="deffilt">Default</button><button data-act="clearf">Clear values</button></div><div class="fgrid">${S.fl.active.map(fctl).join('')||'<p class="muted">No filters selected. Use the Filter button to add some.</p>'}</div></div><div class="card" style="margin-top:16px" id="rl">${recList()}</div>`};
+/* ===================== SETTINGS (tabbed) =====================
+ STABS = tab order and tab names. Each pane is a function in `P` below; edit a pane to change what that tab shows.
+ S.tab = the open tab. Passkey for opening Settings: askKey() (value '0000'). */
+const STABS=[['gen','General'],['nav','Navigation'],['fld','Meeting Fields'],['dsh','Dashboard Settings'],['sea','Search Settings'],['lay','Layout'],['bak','Backup & History'],['ptc','Patch Notes'],['adv','Code / Advanced']];
+/* tabList(): [id,label] pairs in the order set in cfg.settingsTabs (labels fall back to the defaults in STABS) */
+const tabList=()=>{const st=S.cfg.settingsTabs||[],ids=STABS.map(x=>x[0]),o=[...st.map(x=>x.id).filter(i=>ids.includes(i)),...ids.filter(i=>!st.some(x=>x.id===i))];return o.map(i=>[i,((st.find(x=>x.id===i)||{}).label)||STABS.find(x=>x[0]===i)[1]])};
+const srcText=()=>'<style>\n'+$('#appcss').textContent+'\n</style>\n\n<script>\n'+$('#appjs').textContent+'\n<\/script>';
+const optsOf=(a,sel)=>a.map(x=>`<option value="${esc(x[0])}" ${String(sel)===String(x[0])?'selected':''}>${esc(x[1])}</option>`).join('');
+function settings(){const c=S.cfg,t=S.tab||'gen';
+ const P={
+ /* GENERAL: name, description, calendar + date/time preferences (cfg.name, desc, defView, dateFmt, hour12, weekStart) */
+ gen:()=>`<h2>General Settings</h2><label>Application Name</label><input id="s_n" data-g="name" value="${esc(c.name)}"><label>Application Description</label><textarea id="s_d" data-g="desc" rows="2">${esc(c.desc)}</textarea>
+  <div class="two"><div><label>Default Calendar View</label><select id="s_v" data-g="defView">${optsOf([['month','Month'],['week','Week'],['day','Day'],['agenda','Agenda']],c.defView)}</select></div>
+  <div><label>Date Format</label><select id="s_f" data-g="dateFmt">${optsOf(['DD/MM/YYYY','MM/DD/YYYY','YYYY-MM-DD'].map(x=>[x,x]),c.dateFmt)}</select></div>
+  <div><label>Time Format</label><select id="s_h" data-g="hour12">${optsOf([['0','24-hour'],['1','12-hour']],c.hour12?1:0)}</select></div>
+  <div><label>First Day of Week</label><select id="s_w" data-g="weekStart">${optsOf(['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'].map((d,i)=>[i,d]),c.weekStart)}</select></div></div>
+  `,
+ /* NAVIGATION: edits cfg.nav[].label (text) and array order (position). Only the displayed label changes. */
+ nav:()=>`<h2>Navigation</h2><h3>Menu items</h3><p class="muted">Rename or reorder menu items. This changes only what people see; pages and data are unaffected. Settings always stays at the bottom.</p>${c.nav.map(n=>`<div class="fld"><div class="row"><div class="g"><label>${NAVD[n.id]}</label><input data-nl="${n.id}" value="${esc(navLabel(n.id))}"></div>${n.id==='set'?'':`<button data-nm="${n.id}:-1" aria-label="Move up">▲</button><button data-nm="${n.id}:1" aria-label="Move down">▼</button>`}</div></div>`).join('')}
+  <h3>Settings tabs</h3><p class="muted">Rename or reorder the tabs on this page. Only the displayed names and order change; the tabs themselves work exactly the same.</p>${tabList().map(([id,l],i,a)=>`<div class="fld"><div class="row"><div class="g"><label>${STABS.find(x=>x[0]===id)[1]}</label><input data-tl="${id}" value="${esc(l)}"></div><button data-tm="${id}:-1" ${i?'':'disabled'} aria-label="Move up">▲</button><button data-tm="${id}:1" ${i<a.length-1?'':'disabled'} aria-label="Move down">▼</button></div></div>`).join('')}`,
+ /* MEETING FIELDS: list only; the Edit button opens fieldBox(). Array order here = order in the form. */
+ fld:()=>`<div class="row"><h2 class="g" style="margin:0">Meeting Fields</h2><button class="p" data-act="addf">+ Add field</button></div><p class="muted">These fields drive both the Add/Edit Meeting form and the Meeting Search filters.</p>${c.fields.map((f,i)=>`<div class="fld"><div class="row"><div class="g"><b>${esc(f.label)}</b><br><span class="muted">${TYPES[f.type]} · ${f.required?'Required':'Optional'} · ${f.visible===false?'Hidden':'Visible'}</span></div><button data-fm="${f.id}:-1" aria-label="Move up" ${i?'':'disabled'}>▲</button><button data-fm="${f.id}:1" aria-label="Move down" ${i<c.fields.length-1?'':'disabled'}>▼</button><button data-editf="${f.id}">Edit</button><button class="d" data-delf="${f.id}">Delete</button></div></div>`).join('')}`,
+  /* DASHBOARD SETTINGS: three sub-sections (S.dsub). Appearance = titles/layout/spacing/size/alignment/density (cfg.dash, cfg.carousel.per);
+    Cards = add/edit/delete/enable/reorder (cfg.cards); Visibility = which Dashboard sections show (cfg.dash.visible). */
+ dsh:()=>{const D=c.dash,T=D.titles,sub=S.dsub||'app',
+  tx=(k,l)=>`<div><label>${l}</label><input data-dt="${k}" value="${esc(T[k]||'')}" placeholder="${esc(k==='main'?navLabel('dash'):BL[k][0])}"></div>`,
+  sel=(k,l,o)=>`<div><label>${l}</label><select data-da="${k}">${optsOf(o,D[k])}</select></div>`,
+  B={app:()=>`<h3>Titles</h3><p class="muted">Leave a title blank to use its default.</p><div class="two">${tx('main','Dashboard main title')}${tx('stats','Overview title')}${tx('cards','Announcement title')}${tx('upcoming','Upcoming Meetings title')}${tx('today',"Today's Schedule title")}</div>`,
+   ann:()=>`<h3>Announcement</h3><div class="two">${sel('layout','Card layout',[['carousel','Rotating carousel'],['grid','Show all cards (grid)']])}<div><label>Cards per row</label><select data-per="1">${optsOf([1,2,3,4].map(x=>[x,x]),c.carousel.per||3)}</select></div>
+   <div><label>Card spacing (px)</label><input type="number" min="0" max="48" data-da="gap" value="${D.gap}"></div><div><label>Default card height (px, 0 = automatic)</label><input type="number" min="0" max="400" data-da="ch" value="${D.ch}"></div>
+   ${sel('align','Card alignment',[['left','Left'],['center','Centered']])}${sel('density','Density',[['comfortable','Spacious'],['compact','Compact']])}</div>
+   <h3>Announcement cards</h3><p class="muted">Each card counts meetings for one Meeting Field value, or shows the next meetings (Coming Up card type). Add, edit, enable, reorder or delete cards here; the Edit dialog controls title, icon, filter, size and click action.</p>${cardAdmin(false)}`,
+      ov:()=>{const L=c.ovCards||[];return`<h3>Overview cards</h3><p class="muted">The cards under the Overview title. Any number can be shown. Built-in cards can be hidden or deleted; Restore Defaults brings them back.</p><div class="row"><button class="p" data-ovadd="1">+ Add Overview Card</button></div><div style="margin-top:12px">${L.map((o,i)=>`<div class="fld"><div class="row"><label class="ck" style="margin:0"><input type="checkbox" data-oe="${o.id}" ${o.enabled!==false?'checked':''} aria-label="Enabled"></label><span class="g"><b>${esc(o.kind?OVN[o.kind]:cardTitle(o))}</b> <span class="muted">${o.kind?'Built-in':'Custom'}${o.kind||cardOK(o)?'':' · unavailable'}</span></span><button data-om="${o.id}:-1" ${i?'':'disabled'} aria-label="Move up">▲</button><button data-om="${o.id}:1" ${i<L.length-1?'':'disabled'} aria-label="Move down">▼</button>${o.kind?'':`<button data-ovedit="${o.id}">Edit</button>`}<button class="d" data-ovdel="${o.id}">Delete</button></div></div>`).join('')||'<p class="muted">No overview cards.</p>'}</div>`},
+   cu:()=>{const o=fullOrd(c.layout.order),i=o.indexOf('coming'),U=D.cu||{},uf=U.fields||[],
+    sl=(k,l,op,v)=>`<div><label>${l}</label><select data-cu="${k}">${optsOf(op,v)}</select></div>`,nm=(k,l,v)=>`<div><label>${l}</label><input type="number" data-cu="${k}" min="1" max="720" value="${v}"></div>`;
+   return`<h3>Coming Up</h3><p class="muted">A live countdown to the next meeting that has not started, followed by the meetings after it. Only the closest meeting shows the countdown; it moves on automatically when that meeting starts.</p>
+    <label class="ck"><input type="checkbox" data-dv="coming" ${D.visible.coming!==false?'checked':''}> Show Coming Up on the Dashboard</label>
+    <div class="two">${tx('coming','Title')}<div><label>Size</label><select data-lw="coming">${optsOf([[4,'Small'],[6,'Medium'],[8,'Large'],[12,'Full width']],c.layout.w.coming||12)}</select></div>
+    ${sl('count','Number of meetings (1-4)',[1,2,3,4].map(x=>[x,x]),U.count||3)}${sl('layout','Layout',[['featured','Featured (large countdown)'],['compact','Compact']],U.layout||'featured')}${sl('icon','Icon',ICONS,U.icon||'')}
+    ${sl('action','Click action',[['search','Meeting Search (upcoming meetings)'],['recs','Meeting Search (default filters)'],['calendar','Open Calendar'],['add','Add a meeting'],['detail','Open the clicked meeting’s details (Coming Up)'],['none','No action (not clickable)']],U.action||'search')}</div>
+    <label>Position</label><div class="row"><button data-lm="coming:-1" ${i>0?'':'disabled'}>▲ Move up</button><button data-lm="coming:1" ${i<o.length-1?'':'disabled'}>▼ Move down</button><span class="muted">Position ${i+1} of ${o.length}</span></div>
+    <h3>Countdown rules</h3><p class="muted">More than the first value: whole days only ("2 Days"). Between the two values: hours and minutes. Within the second value: minutes and seconds are shown too.</p><div class="two">${nm('dayHours','Show days only when more than (hours away)',U.dayHours||24)}${nm('secHours','Show minutes and seconds within (hours)',U.secHours||7)}</div>
+    <h3>Displayed meeting information</h3><p class="muted">The meeting title, date, time and countdown always show. Tick any extra details to include.</p>${VF().filter(f=>!['title','date','start','end'].includes(f.id)).map(f=>`<label class="ck"><input type="checkbox" data-cf="${f.id}" ${uf.includes(f.id)?'checked':''}> ${esc(f.label)}</label>`).join('')}`},
+   vis:()=>`<h3>Visible dashboard sections</h3>${Object.keys(BL).map(k=>`<label class="ck"><input type="checkbox" data-dv="${k}" ${D.visible[k]!==false?'checked':''}> ${esc(DT(k))}</label>`).join('')}`};
+  return`<h2>Dashboard Settings</h2><div class="tabs">${[['app','Appearance'],['ann','Announcement Cards'],['ov','Overview Cards'],['cu','Coming Up'],['vis','Visibility']].map(x=>`<button class="tab ${sub===x[0]?'on':''}" data-dsub="${x[0]}">${x[1]}</button>`).join('')}</div>${B[sub]()}`},
+ /* SEARCH: cfg.search.defaultFilters (filters active on open) and cfg.search.exclude (fields skipped by text search) */
+ sea:()=>`<h2>Search Settings</h2><h3>Default Meeting Search Filters</h3><p class="muted">Checked filters are active when Meeting Search opens. Users can still add or remove them with the Filter button.</p>${FK().map(k=>`<label class="ck"><input type="checkbox" data-df="${k.id}" ${c.search.defaultFilters.includes(k.id)?'checked':''}> ${esc(k.label)}</label>`).join('')}<h3>Fields included in text search</h3><p class="muted">What the header search bar looks through.</p>${VF().map(f=>`<label class="ck"><input type="checkbox" data-sc="${f.id}" ${c.search.exclude.includes(f.id)?'':'checked'}> ${esc(f.label)}</label>`).join('')}`,
+ lay:()=>`<h2>Layout</h2><p class="muted">Fast Edit Mode: drag dashboard sections, nudge them with the arrow buttons, set their width, and resize the header.</p><div class="row"><button data-act="fast" class="${S.fast?'p':''}">Fast Edit Mode: ${S.fast?'On':'Off'}</button><button data-act="resetlay">Reset layout</button></div>`,
+ bak:()=>`<h2>Backup &amp; History</h2><p class="muted">Export saves the settings and configuration (not meetings) as a JSON backup. The Settings passkey is never included.</p><div class="row"><button data-act="export">Export configuration</button><button data-act="import">Import configuration</button><input type="file" id="imp" accept=".json" hidden></div><h3>Configuration history</h3>${(c.history||[]).map((h,i)=>`<div class="row" style="margin-bottom:6px"><span class="g">${new Date(h.ts).toLocaleString()} — ${esc(h.note)}</span><button data-hist="${i}">Restore</button></div>`).join('')||'<p class="muted">No saved versions yet.</p>'}`,
+ /* PATCH NOTES: current version, one-step rollback/restore (switchV), editable notes per version, and creating a new version */
+ ptc:()=>{const V=c.versions,ci=V.list.findIndex(x=>x.v===V.cur),pv=V.prev,bl=n=>String(n||'').split('\n').map(x=>x.replace(/^[\s\-•*]+/,'').trim()).filter(Boolean);
+  return`<h2>Patch Notes</h2><p>Current version: <b>v${V.cur}</b></p><div class="row"><button class="d" data-act="vback" ${pv?'':'disabled'}>${pv?(pv.v<V.cur?'Roll back to v':'Restore v')+pv.v:'No previous version saved'}</button></div><p class="muted">Only one previous version is kept: the immediately previous one. Rolling back restores that version's saved Settings configuration (meetings and application code are not changed), and the version you leave becomes the single stored previous version. No older versions are stored.</p>
+   <h3>Version history</h3>${V.list.map((x,i)=>[x,i]).reverse().map(([x,i])=>`<div class="fld"><b>v${x.v}</b>${x.v===V.cur?' <span class="badge upcoming">Current</span>':''}${x.date?` <span class="muted">${esc(x.date)}</span>`:''}<ul class="pn">${bl(x.notes).map(b=>`<li>${esc(b)}</li>`).join('')||'<li class="muted">No notes.</li>'}</ul><details><summary>Edit notes</summary><label for="vn${i}">One change per line</label><textarea id="vn${i}" data-vn="${i}" rows="4">${esc(x.notes||'')}</textarea></details></div>`).join('')}
+   <h3>Create new version</h3>${ci===V.list.length-1?`<label for="nv_n">Changes in the new version (one per line)</label><textarea id="nv_n" rows="3"></textarea><p><button data-act="vnew">Create v${nextV(V.cur)}</button></p>`:'<p class="muted">New versions can only be created from the latest version.</p>'}`},
+ /* ADVANCED: read-only source viewer. There is no live code editor: edit a copy and publish it again. */
+ adv:()=>`<h2>Code / Advanced</h2><div class="warn">Advanced area for administrators. This is the application's source code (styles and script), shown read-only. Editing code can break the app, and changes only take effect after the page is republished.</div><div class="row"><button data-act="copysrc">Copy all code</button></div><label for="srcv">Application source</label><textarea id="srcv" readonly rows="22" spellcheck="false" style="font-family:ui-monospace,Consolas,monospace;font-size:.8rem;white-space:pre">${esc(srcText())}</textarea>`};
+ const dirty=isDirty();return`<div class="sbar"><span role="status">${dirty?'● You have unsaved changes':'All changes saved'}</span><button class="p" data-act="savecfg" ${dirty?'':'disabled'}>Save Changes</button></div><div class="sl"><div class="tabs vt" role="tablist">${tabList().map(x=>`<button role="tab" aria-selected="${t===x[0]}" class="tab ${t===x[0]?'on':''}" data-tab="${x[0]}">${x[1]}</button>`).join('')}</div><div class="card tp" role="tabpanel">${P[t]()}${RD[t]?`<div class="row" style="margin-top:20px;padding-top:14px;border-top:1px solid var(--bd)"><button class="d" data-act="rdef">Restore Defaults</button><span class="muted">Resets only this section; press Save Changes to keep it.</span></div>`:''}</div></div>`}
+/* fieldBox: editor for ONE field — name (label), type, required, visible, options. Position is changed with the ▲▼ buttons in the list.
+   Changing the type keeps stored meeting values; options are kept even when the type is not Dropdown. */
+function fieldBox(id){const f=F(id);modal(`<h2>Edit field</h2><label>Field name</label><input id="e_l" value="${esc(f.label)}"><label>Field type</label><select id="e_t">${optsOf(Object.entries(TYPES),f.type)}</select>
+ <div id="e_o" ${f.type==='dropdown'?'':'hidden'}><label>Options (one per line)</label><textarea id="e_op" rows="5">${esc(f.options.join('\n'))}</textarea></div>
+ <label class="ck"><input type="checkbox" id="e_r" ${f.required?'checked':''}> Required</label><label class="ck"><input type="checkbox" id="e_v" ${f.visible!==false?'checked':''}> Visible (shown in forms and as a search filter)</label>
+ <div class="row" style="margin-top:14px"><button data-x="close">Cancel</button><button class="p" id="e_s">Save field</button></div>`);
+ $('#e_t').onchange=()=>{$('#e_o').hidden=$('#e_t').value!=='dropdown';if(!$('#e_op').value.trim())$('#e_op').value=[...new Set(S.meetings.map(m=>m.v[f.id]).filter(v=>v&&typeof v==='string'))].join('\n')};
+ $('#e_s').onclick=()=>{const c=clone(S.cfg),g=c.fields.find(x=>x.id===id);g.label=$('#e_l').value.trim()||g.label;g.type=$('#e_t').value;g.options=$('#e_op').value.split('\n').map(x=>x.trim()).filter(Boolean);g.required=$('#e_r').checked;g.visible=$('#e_v').checked;close();saveCfg(c,'Edited field “'+g.label+'”')}}
+/* render */
+function render(){const c=S.cfg;/* HEADER TITLE = label of the current page (cfg.nav). Search bar is hidden on Settings (S.view==='set'). */
+ $('#an').textContent=S.view==='dash'&&S.cfg.dash.titles.main?S.cfg.dash.titles.main:navLabel(S.view);document.title=c.name+' — '+navLabel(S.view);$('#hsw').hidden=S.view==='set';
+ const hh=c.layout.hh??12;$('#hd').style.setProperty('--hh',hh+'px');$('#hd').classList.toggle('fe-h',S.fast);
+ $('#nav').innerHTML='<button class="p" data-add="1">+ Add meeting</button>'+(S.fast?'<button class="p" data-act="fast">Fast Edit: On — Done</button>':'');
+ $('#hfe').innerHTML=S.fast?`<div class="fb hfb"><b>Header size</b><button data-hh="-8">− Smaller</button><button data-hh="8">+ Larger</button>${[['Compact',0],['Standard',12],['Large',32],['Extra large',56]].map(q=>`<button data-hh="=${q[1]}" class="${hh===q[1]?'p':''}">${q[0]}</button>`).join('')}</div>`:'';
+ /* DRAWER MENU: items in cfg.nav order, labels from cfg.nav[].label; Settings pinned at the bottom (passkey). */
+ $('#dr').innerHTML=`<div class="dh"><b>☰ ${esc(c.name)}</b><button data-drawer="0" aria-label="Close menu">✕</button></div>${c.nav.filter(n=>n.id!=='set').map(n=>`<button class="dl ${S.view===n.id?'on':''}" data-view="${n.id}">${esc(navLabel(n.id))}</button>`).join('')}<div class="ds"><button class="dl ${S.view==='set'?'on':''}" data-view="set">🔒 ${esc(navLabel('set'))}</button><small class="muted">Passkey required</small></div>`;
+ const a=document.activeElement,keep=a&&a.id;
+ $('#app').innerHTML=(S.live?'':'<div class="warn">Shared storage is unavailable in this view. Meetings and settings will not be saved or shared.</div>')+({dash,cal:calView,recs,set:settings}[S.view])();
+ if(keep&&$('#'+keep)&&['INPUT','TEXTAREA'].includes(a.tagName))$('#'+keep).focus()}
+/* navigation */
+function closeDr(){$('#dr').classList.remove('open');$('#dv').style.display='none'}
+/* SETTINGS PASSKEY: the code is PASSKEY below (exactly 4 digits). The field accepts digits only, max 4, and shows a numeric keypad on phones
+   (inputmode="numeric"). A correct code opens Settings immediately; a wrong one shows the message in #pe. Change the code by editing PASSKEY. */
+const PASSKEY='0000';
+function askKey(){modal(`<h2>Settings passkey</h2><label for="pk">Enter the 4-digit passkey to open Settings</label><input type="password" id="pk" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" aria-describedby="pe"><p id="pe" class="muted" role="alert" style="min-height:1.5em;margin:8px 0 0"></p><div class="row" style="margin-top:10px"><button data-x="close">Cancel</button><button class="p" id="pkb">Unlock</button></div>`);
+ const k=$('#pk'),e=$('#pe'),go=()=>{const v=k.value;
+  if(v.length<4){e.style.color='var(--dg)';e.textContent='Please enter all 4 digits.';return}
+  if(v===PASSKEY){close();S.view='set';S.fast=false;render()}
+  else{e.style.color='var(--dg)';e.textContent='Incorrect passkey. Please check the code and try again.';k.value='';k.focus()}};
+ k.oninput=()=>{k.value=k.value.replace(/\D/g,'').slice(0,4);e.textContent='';if(k.value.length===4)go()};
+ $('#pkb').onclick=go;k.onkeydown=ev=>{if(ev.key==='Enter')go()};k.focus()}
+/* CALENDAR QUICK ADD: double-click any element carrying data-date (month cell, week day, day view) to open Add Meeting with that date. */
+document.addEventListener('dblclick',e=>{const c=e.target.closest('[data-date]');if(c&&!e.target.closest('[data-open],a,button'))form(null,c.dataset.date)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeDr();close()}if((e.key==='Enter'||e.key===' ')&&e.target.matches&&e.target.matches('[data-open][tabindex]')){e.preventDefault();e.target.click()}});
+/* events */
+document.addEventListener('click',e=>{const t=e.target.closest('button,[data-open],[data-day],[data-x]');if(!t){if(e.target.id==='modal')close();if(e.target.id==='dv')closeDr();return}const d=t.dataset;
+ if(d.x)return close();if(d.cc){if(!S.fast)openCustom(d.cc);return}
+ if(d.cs!==undefined){S.t=0;S.slide=d.cs[0]==='='?+d.cs.slice(1):(S.slide||0)+ +d.cs;return refreshCar()}
+ if(d.tm){const c=clone(S.cfg),[id,n]=d.tm.split(':'),a=tabList().map(([i,l])=>({id:i,label:l})),i=a.findIndex(x=>x.id===id),j=i+ +n;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];c.settingsTabs=a;return saveCfg(c)}
+ if(d.om){const c=clone(S.cfg),[id,n]=d.om.split(':'),a=c.ovCards,i=a.findIndex(x=>x.id===id),j=i+ +n;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];return saveCfg(c)}
+  if(d.lm){const c=clone(S.cfg),[id,n]=d.lm.split(':'),o=c.layout.order=fullOrd(c.layout.order),i=o.indexOf(id),j=i+ +n;if(j<0||j>=o.length)return;[o[i],o[j]]=[o[j],o[i]];return saveCfg(c)}
+ if(d.dsub){S.dsub=d.dsub;return render()}
+ if(d.cm){const c=clone(S.cfg),[id,n]=d.cm.split(':'),a=c.cards,i=a.findIndex(x=>x.id===id),j=i+ +n;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];return saveCfg(c,'Reordered cards')}
+ if(d.ovadd)return cardBox(undefined,'ovCards');
+ if(d.ovedit)return cardBox(d.ovedit,'ovCards');
+ if(d.ovdel)return confirmBox('Delete this overview card?','Delete',()=>{const c=clone(S.cfg);c.ovCards=c.ovCards.filter(x=>x.id!==d.ovdel);saveCfg(c,'Deleted overview card')});
+ if(d.cardadd)return cardBox();
+ if(d.cardedit)return cardBox(d.cardedit);
+ if(d.carddel)return confirmBox('Delete this dashboard card?','Delete',()=>{const c=clone(S.cfg);c.cards=c.cards.filter(x=>x.id!==d.carddel);saveCfg(c,'Deleted dashboard card')});
+ if(d.card){if(!S.fast)openCard(d.card);return}
+ if(d.drawer!==undefined){$('#dr').classList.toggle('open',d.drawer==='1');$('#dv').style.display=d.drawer==='1'?'block':'none';return}
+ if(d.view){closeDr();if(d.view!=='set'&&S.view==='set'&&isDirty())return guard(()=>go(d.view));return go(d.view)}
+ if(d.tab){S.tab=d.tab;return render()}
+ if(d.editf)return fieldBox(d.editf);
+ if(d.fm||d.nm){const c=clone(S.cfg),[id,n]=(d.fm||d.nm).split(':');let a=d.fm?c.fields:c.nav.filter(x=>x.id!=='set'),i=a.findIndex(x=>x.id===id),j=i+ +n;if(j<0||j>=a.length)return;[a[i],a[j]]=[a[j],a[i]];if(d.nm)c.nav=[...a,c.nav.find(x=>x.id==='set')];return saveCfg(c,'Reordered '+(d.fm?'fields':'navigation'))}
+ if(d.hh){const c=clone(S.cfg),L=c.layout,cur=L.hh??12,v=d.hh[0]==='='?+d.hh.slice(1):cur+ +d.hh;L.hh=Math.max(0,Math.min(56,v));return saveCfg(c,'Header resized')}if(d.add)return form();
+ if(d.open)return detail(d.open);if(d.edit){const m=S.meetings.find(x=>x.id===d.edit);return form(m)}
+ if(d.day){e.preventDefault();S.cur=pd(d.day);S.mode='day';return render()}
+ if(d.mode){S.mode=d.mode;return render()}
+ if(d.nav!==undefined){const n=+d.nav,m=S.mode,c=S.cur;S.cur=n===0?new Date():m==='month'?new Date(c.getFullYear(),c.getMonth()+n,1):addD(c,n*(m==='week'?7:m==='day'?1:30));return render()}
+ if(d.cancel)return confirmBox('Cancel this meeting?','Cancel meeting',r=>{const m=S.meetings.find(x=>x.id===d.cancel);saveM(m.id,{v:m.v,status:'cancelled',reason:r.trim(),created:m.created||0});toast('Meeting cancelled.')},'<label>Cancellation reason (optional)</label><textarea id="cr" rows="3"></textarea>');
+ if(d.restore){const m=S.meetings.find(x=>x.id===d.restore);saveM(m.id,{v:m.v,status:'scheduled',reason:'',created:m.created||0});return close()}
+ if(d.del)return confirmBox('Delete this meeting permanently?','Delete',()=>{delM(d.del);toast('Meeting deleted.')});
+ if(d.delf){const f=F(d.delf);return confirmBox('Are you sure you want to delete this field?','Delete',()=>{const c=clone(S.cfg);c.fields=c.fields.filter(x=>x.id!==f.id);saveCfg(c,'Deleted field “'+f.label+'”')},`<p class="muted">${esc(f.label)}</p>`)}
+ if(d.hist){const h=S.cfg.history[+d.hist];return confirmBox('Restore this configuration version?','Restore',()=>{const c={...clone(h.cfg),history:S.cfg.history,versions:S.cfg.versions};saveCfg(c,'Restored version from '+new Date(h.ts).toLocaleString())})}
+ if(d.mv){const[k,n]=d.mv.split(':'),c=clone(S.cfg),o=c.layout.order=fullOrd(c.layout.order),i=o.indexOf(k),j=Math.max(0,Math.min(o.length-1,i+ +n));o.splice(j,0,o.splice(i,1)[0]);return saveCfg(c,'Layout changed')}
+ if(d.w){const[k,n]=d.w.split(':'),c=clone(S.cfg);c.layout.w[k]=+n;return saveCfg(c,'Layout changed')}
+ const act=d.act;if(act==='fast'){if(!S.fast&&S.view==='set'&&isDirty())return guard(()=>{S.fast=true;S.view='dash';render()});S.fast=!S.fast;if(S.fast)S.view='dash';return render()}
+  if(act==='addf'){const c=clone(S.cfg);c.fields.push({id:'f_'+uid(),label:'New field',type:'text',required:false,options:[],builtin:false});const nid=c.fields[c.fields.length-1].id;saveCfg(c,'Added field');return fieldBox(nid)}
+ if(act==='filt')return filterBox();
+ if(act==='savecfg')return saveSettings();
+ if(act==='rdef'){const nm=tabList().find(x=>x[0]===S.tab)[1];return confirmBox('Restore defaults for “'+nm+'”?','Restore Defaults',()=>{const c=clone(S.cfg),d=DEF();RD[S.tab].forEach(k=>c[k]=d[k]);saveCfg(c);toast('Defaults restored. Press Save Changes to apply them.')},'<p>Only this section is reset. The reset is not permanent until you press Save Changes.</p>')}
+ if(act==='vback')return switchV();
+ if(act==='vnew'){if(isDirty())return toast('Save or discard your Settings changes first.');const c=clone(S.cfg),V=c.versions,ci=V.list.findIndex(x=>x.v===V.cur);V.prev={v:V.cur,snap:snapOf(c)};const v=nextV(V.cur);V.list.push({v,date:ymd(new Date()),notes:$('#nv_n').value.trim()});V.cur=v;persist(c,'Created version v'+v);return toast('Version v'+v+' created.')}
+ if(act==='deffilt'){resetFilters();S.q='';$('#hq').value='';return render()}
+ if(act==='clearf'){S.fl.vals={};return render()}
+ if(act==='copysrc')return(async()=>{const t=$('#srcv');t.select();let ok=false;try{await navigator.clipboard.writeText(t.value);ok=true}catch(e){try{ok=document.execCommand('copy')}catch(x){}}toast(ok?'Code copied.':'Copy failed. Select the text and copy it manually.')})()
+ if(act==='resetlay'){const c=clone(S.cfg);c.layout=DEF().layout;return saveCfg(c,'Layout reset')}
+ if(act==='export'){return(async()=>{try{const dl=await claude.use('downloads');await dl.save({filename:'meeting-office-config.json',data:JSON.stringify({format:'meeting-office-config',version:S.cfg.versions.cur,exportedAt:new Date().toISOString(),config:snapOf(S.cfg),patchNotes:S.cfg.versions.list.map(x=>({v:x.v,date:x.date,notes:x.notes}))},null,2)})}catch(x){toast('Export unavailable or declined.')}})()}
+ if(act==='import')return $('#imp').click()});
+document.addEventListener('change',e=>{const t=e.target;
+ if(t.id==='imp'){const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result);const x=j.config||j;if(!Array.isArray(x.fields))throw 0;saveCfg({...DEF(),...x,history:S.cfg.history,versions:S.cfg.versions},'Imported configuration')}catch(x){toast('Invalid configuration file.')}};r.readAsText(t.files[0]);return}
+  if(t.id==='jump'&&t.value){S.cur=pd(t.value);return render()}
+ if(t.dataset.secs!==undefined||t.dataset.per!==undefined){const c=clone(S.cfg);if(t.dataset.secs!==undefined)c.carousel.secs=Math.max(5,Math.min(120,+t.value||15));else c.carousel.per=+t.value;return saveCfg(c,'Carousel settings')}
+ if(t.dataset.dt!==undefined||t.dataset.da!==undefined||t.dataset.dv!==undefined||t.dataset.ce!==undefined){const c=clone(S.cfg),D=c.dash;
+  if(t.dataset.dt!==undefined)D.titles[t.dataset.dt]=t.value.trim();else if(t.dataset.da!==undefined)D[t.dataset.da]=t.type==='number'?Math.max(0,+t.value||0):t.value;
+  else if(t.dataset.dv!==undefined)D.visible[t.dataset.dv]=t.checked;else c.cards.find(x=>x.id===t.dataset.ce).enabled=t.checked;return saveCfg(c,'Dashboard settings')}
+ if(t.dataset.tl!==undefined){const c=clone(S.cfg);c.settingsTabs=tabList().map(([id,label])=>({id,label}));c.settingsTabs.find(x=>x.id===t.dataset.tl).label=t.value.trim()||STABS.find(x=>x[0]===t.dataset.tl)[1];return saveCfg(c)}
+ if(t.dataset.oe!==undefined){const c=clone(S.cfg);c.ovCards.find(x=>x.id===t.dataset.oe).enabled=t.checked;return saveCfg(c)}
+   if(t.dataset.lw!==undefined){const c=clone(S.cfg);c.layout.w[t.dataset.lw]=+t.value;return saveCfg(c)}
+ if(t.dataset.cf!==undefined){const c=clone(S.cfg),U=c.dash.cu=c.dash.cu||{};const a=new Set(U.fields||[]);t.checked?a.add(t.dataset.cf):a.delete(t.dataset.cf);U.fields=VF().map(f=>f.id).filter(x=>a.has(x));return saveCfg(c)}
+ if(t.dataset.cu!==undefined){const c=clone(S.cfg),U=c.dash.cu=c.dash.cu||{},k=t.dataset.cu;U[k]=['count','dayHours','secHours'].includes(k)?Math.max(1,+t.value||1):t.value;U.count=Math.min(4,U.count||3);if((U.secHours||7)>(U.dayHours||24))U.secHours=U.dayHours;return saveCfg(c)}
+ if(t.dataset.g){const c=clone(S.cfg),g=t.dataset.g,v=t.value;c[g]=g==='hour12'?v==='1':g==='weekStart'?+v:g==='name'?(v.trim()||'Meeting Office'):g==='desc'?v.trim():v;return saveCfg(c)}
+ if(t.dataset.vn!==undefined){const c=clone(S.cfg);const e=c.versions.list[+t.dataset.vn];e.notes=t.value;e.edited=true;return saveCfg(c)}
+ if(t.dataset.nl){const c=clone(S.cfg);c.nav.find(n=>n.id===t.dataset.nl).label=t.value.trim()||NAVD[t.dataset.nl];return saveCfg(c,'Renamed menu item')}
+ if(t.dataset.df!==undefined||t.dataset.sc!==undefined){const c=clone(S.cfg),df=t.dataset.df!==undefined,id=df?t.dataset.df:t.dataset.sc,a=new Set(df?c.search.defaultFilters:c.search.exclude);(df?t.checked:!t.checked)?a.add(id):a.delete(id);
+  if(df)c.search.defaultFilters=FK().map(k=>k.id).filter(x=>a.has(x));else c.search.exclude=[...a];return saveCfg(c,df?'Default filters':'Search scope')}});
+document.addEventListener('input',e=>{const t=e.target;
+ if(t.id==='hq'){S.q=t.value;if(S.view!=='recs'){resetFilters();S.view='recs';S.fast=false;render()}else $('#rl').innerHTML=recList();return}
+ if(t.dataset.fv){S.fl.vals[t.dataset.fv]={...(S.fl.vals[t.dataset.fv]||{}),[t.dataset.vk]:t.value};$('#rl').innerHTML=recList()}});
+/* FAST EDIT DRAG: drag a dashboard section onto another to reorder it (writes cfg.layout.order). */
+let dragK=null;
+/* CARD RESIZE (Fast Edit Mode): drag the corner handle (.rh) of a card; width snaps to columns (c.w), height is pixels (c.h). Saved on release. */
+document.addEventListener('pointerdown',e=>{const h=e.target.closest('.rh');if(!h)return;e.preventDefault();S.rz=1;const w=h.parentNode,per=perView(),unit=w.parentNode.clientWidth/per,sw=w.offsetWidth,sh=w.offsetHeight,x0=e.clientX,y0=e.clientY,id=h.dataset.rz;let span=Math.max(1,Math.min(per,Math.round(sw/unit))),H=sh;
+ const mv=ev=>{span=Math.max(1,Math.min(per,Math.round((sw+ev.clientX-x0)/unit)));H=Math.max(60,Math.round(sh+ev.clientY-y0));w.style.gridColumn='span '+span;w.style.minHeight=H+'px'},
+  up=()=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);setTimeout(()=>S.rz=0,0);const c=clone(S.cfg),k=c.cards.find(x=>x.id===id);k.w=span;k.h=H;saveCfg(c,'Resized card')};
+ addEventListener('pointermove',mv);addEventListener('pointerup',up)});
+document.addEventListener('dragstart',e=>{if(S.rz)return e.preventDefault();const b=e.target.closest('[data-blk]');if(b&&S.fast){dragK=b.dataset.blk;e.dataTransfer.effectAllowed='move'}});
+document.addEventListener('dragover',e=>{const b=e.target.closest('[data-blk]');if(b&&dragK){e.preventDefault();document.querySelectorAll('.over').forEach(x=>x.classList.remove('over'));b.classList.add('over')}});
+document.addEventListener('drop',e=>{const b=e.target.closest('[data-blk]');if(!b||!dragK)return;e.preventDefault();const c=clone(S.cfg),o=c.layout.order=fullOrd(c.layout.order),j=o.indexOf(b.dataset.blk);o.splice(o.indexOf(dragK),1);o.splice(j,0,dragK);dragK=null;saveCfg(c,'Layout changed')});
+document.addEventListener('dragend',()=>{dragK=null;document.querySelectorAll('.over').forEach(x=>x.classList.remove('over'))});
+init();
+</script></body></html>
